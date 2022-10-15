@@ -1,0 +1,732 @@
+import 'dart:developer';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/Helpers.dart';
+import '../utils/LocalStorage.dart';
+import '../utils/constants.dart';
+import '../widgets/app_button.dart';
+import '../widgets/dialog_box.dart';
+import '../widgets/loader.dart';
+
+class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  State<Profile> createState() => _LoginState();
+}
+
+class _LoginState extends State<Profile> {
+  TextEditingController dateinput = TextEditingController();
+  List<dynamic> children = [
+    {"name": "Navya K C"},
+    {"name": "Chandru K"},
+    {"name": "Jaya"},
+  ];
+  bool editProfile = false;
+  bool imageSelected= false;
+  late File photo;
+  bool loading=false;
+  String token='';
+  LocalStorage localStorage=LocalStorage();
+  String name='';
+  String mobile='9482759828';
+  String email='naveenkc435@gmail.com';
+  String profile='';
+  String dob='';
+  String address='';
+  String city='';
+  String gender='';
+  String state='';
+  String pincode='';
+  String parentId='';
+  TextEditingController uniqueController = TextEditingController();
+
+
+  @override
+  void initState() {
+    dateinput.text = "";
+
+    super.initState();
+  }
+
+
+
+  void selectDate() async {
+    DateTime? pickedDate = await showDatePicker(
+        context: context, initialDate: DateTime.now(),
+        firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+        lastDate: DateTime(2101),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Colors.black12,
+                onPrimary: Colors.black,
+                onSurface: Colors.black45,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: Colors.black, // button text color
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        }
+    );
+
+
+    if(pickedDate != null ){
+      print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
+      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+      print(formattedDate); //formatted date output using intl package =>  2021-03-16
+      //you can implement different kind of Date Format here according to your requirement
+
+      setState(() {
+        dateinput.text = formattedDate; //set output date to TextField value.
+      });
+    }else{
+      print("Date is not selected");
+    }
+  }
+
+
+  Future pickFromCamera()async{
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+
+      setState(() => this.photo = imageTemp);
+      setState(()=> imageSelected = true);
+
+      //uploadImage(this.photo.path.toString());
+
+    } on PlatformException catch(e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+  Future pickFromGallery()async{
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+      log(image.name.toString());
+
+      setState(() => this.photo = imageTemp);
+      setState(()=> imageSelected = true);
+      //  uploadImage(this.photo.path.toString());
+    } on PlatformException catch(e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+
+  Future selectFrom() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            elevation: 0,
+            backgroundColor: Colors.white,
+            child: Stack(children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding:
+                  const EdgeInsets.only(top: 20, bottom: 20, right: 20, left: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          'Select Image from',
+                          style: TextStyle(
+
+                              fontSize: 18.0,
+                              color: Colors.black),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      Button(
+                        elevation: 0.0,
+                        borderRadius: BorderRadius.circular(25),
+                        textColor: Colors.white,
+                        backgroundColor: AppColors.soil,
+                        text: 'Gallery',
+                        fontSize: 18,
+                        width: MediaQuery.of(context).size.width,
+                        height: 20,
+                        onPressed: () {
+                          Navigator.pop(context,true);
+                          pickFromGallery();
+                        }, fontFamily: 'HindMedium',
+                      ),
+
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      Button(
+                        elevation: 0.0,
+                        borderRadius: BorderRadius.circular(25),
+                        textColor: Colors.white,
+                        backgroundColor: AppColors.soil,
+                        text: 'Camera',
+                        fontSize: 18,
+                        width: MediaQuery.of(context).size.width,
+                        height: 20,
+                        onPressed: () {
+                          Navigator.pop(context,true);
+                          pickFromCamera();
+                        }, fontFamily: 'HindMedium',
+                      ),
+
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      Button(
+                        elevation: 0.0,
+                        borderRadius: BorderRadius.circular(25),
+                        textColor: Colors.white,
+                        backgroundColor: AppColors.soil,
+                        text: 'Cancel',
+                        fontSize: 18,
+                        width: MediaQuery.of(context).size.width,
+                        height: 20,
+                        onPressed: () {
+                          Navigator.pop(context,true);
+                        }, fontFamily: 'HindMedium',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          );
+        });
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    var helpers = Helpers();
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: AppColors.soil,
+              elevation: 1.0,
+              centerTitle: true,
+              title: Text(
+                'Profile',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: <Color>[AppColors.soil, AppColors.darkSoil]),
+                ),
+              ),
+            ),
+            body:loading?Loader(): !editProfile
+                ? SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      height: 300,
+                      width: MediaQuery.of(context).size.width,
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 115,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: <Color>[AppColors.soil, AppColors.darkSoil]),
+                            ),
+
+                          ),
+                          Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: CircleAvatar(
+                                    radius: 60,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.black,
+                                      radius: 55.0,
+                                      backgroundImage: AssetImage(
+                                        profile,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Text(
+                                  name,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.only(top: 2, bottom: 10),
+                                child: Text(
+                                  email + ' | ' + mobile,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                ),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+
+                                    setState((){
+                                      editProfile =true;
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.black45,
+                                      fixedSize: Size(110, 10),
+                                      textStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      )),
+                                  child: Text(
+                                    'Edit Profile',
+                                    maxLines: 1,
+                                    style: TextStyle(fontSize: 12),
+                                  ))
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[100],
+                      height: 25,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: Text(
+                            'Family Members',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      color: Colors.white,
+                      child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: children.length,
+                          itemBuilder: (context, index) {
+                            return Column(children: <Widget>[
+                              Container(
+                                height: 60,
+                                child: ListTile(
+                                  title: Text(
+                                    children[index]["name"],
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios_sharp,
+                                    color: Colors.black,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      /*  _currentItem = index;
+                                  card = children[_currentItem]['card'];
+                                  number = children[_currentItem]['number'];
+                                  image = children[_currentItem]['image'];
+                                  label = children[_currentItem]['label'];
+                                  date = children[_currentItem]['date'];
+                                  isDefault = true;*/
+                                    });
+                                  },
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                color: Colors.grey[200],
+                                thickness: 2,
+                              )
+                            ]);
+                          }),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 50,
+                          width: 300,
+                          child: ElevatedButton(
+                            child: Text(
+                              '+ Connect Family',
+                              style: TextStyle(
+                                color: AppColors.soil,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            onPressed: () async{
+
+
+                              //Navigator.pushNamed(context, '/studentDetails');
+                            },
+                            style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(25.0),
+                                        side: BorderSide(
+                                          color: AppColors.soil,
+                                        )))),
+                          ),
+                        )),
+                  ],
+                ))
+                : SingleChildScrollView(
+              child: SafeArea(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            color: Colors.white,
+                            width: MediaQuery.of(context).size.width,
+                            child: Stack(children: [
+                              Container(
+                                height: 115,
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: <Color>[AppColors.soil, AppColors.darkSoil]),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child:CircleAvatar(
+                                        radius:60.0,
+                                        backgroundColor: Colors.white,
+                                        child:imageSelected?
+                                        CircleAvatar(
+                                          backgroundColor: Colors.black,
+                                          radius: 55.0,
+                                          backgroundImage: FileImage(photo) ,
+                                        ):CircleAvatar(
+                                          backgroundColor: Colors.black,
+                                          radius: 55.0,
+                                          backgroundImage: AssetImage(helpers.person),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: TextButton(
+                                      child: Text('Change Picture',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14)),
+                                      onPressed: () {
+                                        selectFrom();
+                                      },
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: name,
+                                        hintText: 'Name',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+
+                                      },
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      readOnly: true,
+                                      onTap: selectDate,
+                                      controller: dateinput,
+                                      decoration: InputDecoration(
+                                        suffixIcon: Icon(
+                                          Icons.calendar_today_outlined,
+                                          color: Colors.grey,
+                                        ),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: dob,
+                                        hintText: 'Date of Birth',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+                                        setState((){
+
+                                        });
+                                      },
+
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: gender,
+                                        hintText: 'Gender',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+                                        setState((){
+
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      keyboardType: TextInputType.streetAddress,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: address,
+                                        hintText: 'Address',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+                                        setState((){
+
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: city,
+                                        hintText: 'City',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+                                        setState((){
+
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: state,
+                                        hintText: 'State',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+                                        setState((){
+
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey
+                                            )
+                                        ),
+                                        labelText: pincode,
+                                        hintText: 'Pincode',
+                                        labelStyle: TextStyle(
+                                            color: Colors.black
+                                        ),focusedBorder:OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.black,
+                                        ),
+                                      ),
+                                      ),
+                                      onChanged: (value){
+                                        setState((){
+
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Button(
+                                          elevation: 0.0,
+                                          textColor: Colors.white,
+                                          backgroundColor: AppColors.soil,
+                                          text: 'Update',
+                                          width: 330,
+                                          height: 50,
+                                          fontSize: 18,
+                                          onPressed: () {
+                                            Navigator.pushNamed(context, "");
+                                          },
+                                          borderRadius: BorderRadius.circular(25), fontFamily: 'HindBold',
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+
+
+                                ],
+                              )
+                            ]))
+                      ])),
+            )));
+  }
+
+  Future<bool> _onWillPop() async {
+    if(editProfile){
+      setState((){
+        editProfile =false;
+      });
+    }
+    else{
+      return true;
+    }
+    return false;
+  }
+}
