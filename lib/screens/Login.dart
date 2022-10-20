@@ -153,7 +153,7 @@ class _LoginState extends State<Login> {
                 ),
 
                 SizedBox(
-                  height: 150,
+                  height: 50,
                 ),
                 Align(
                   alignment: Alignment.center,
@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
                 ),
 
                 SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
                 Align(
                   alignment: Alignment.center,

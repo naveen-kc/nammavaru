@@ -1,10 +1,12 @@
 import 'dart:developer';
+import 'dart:math';
 
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
@@ -33,8 +35,9 @@ class _HomeState extends State<Home> {
     const Page1(),
     const Page2(),
     const Page3(),
-    const Page5(),
     const Page4(),
+    const Page5(),
+
   ];
 
   @override
@@ -284,11 +287,11 @@ class _HomeState extends State<Home> {
                 enableFeedback: false,
                 onPressed: () {
                   setState(() {
-                    pageIndex = 4;
+                    pageIndex = 3;
                     appBarName = "Banking";
                   });
                 },
-                icon: pageIndex == 4
+                icon: pageIndex == 3
                     ? const Icon(
                   Icons.credit_card_sharp,
                   color: AppColors.soil,
@@ -303,7 +306,7 @@ class _HomeState extends State<Home> {
               Text(
                 "Banking",
                 style: TextStyle(
-                    color: pageIndex == 4 ? AppColors.soil : Colors.black,
+                    color: pageIndex == 3 ? AppColors.soil : Colors.black,
                     fontSize: 10),
               )
             ],
@@ -314,30 +317,34 @@ class _HomeState extends State<Home> {
                 enableFeedback: false,
                 onPressed: () {
                   setState(() {
-                    pageIndex = 3;
+                    pageIndex = 4;
                     appBarName = "Payment History";
                   });
                 },
-                icon: pageIndex == 3
-                    ? const Icon(
-                  Icons.library_books,
-                  color: AppColors.soil,
-                  size: 30,
-                )
-                    : const Icon(
-                  Icons.my_library_books_outlined,
-                  color: Colors.black,
-                  size: 30,
-                ),
-              ),
+
+    icon: pageIndex == 4
+    ? const Icon(
+    Icons.library_books,
+    color: AppColors.soil,
+    size: 30,
+    )
+        : const Icon(
+    Icons.my_library_books_outlined,
+    color: Colors.black,
+    size: 30,
+    ),
+    ),
+
+
               Text(
                 "Payment History",
                 style: TextStyle(
-                    color: pageIndex == 3 ? AppColors.soil : Colors.black,
+                    color: pageIndex == 4 ? AppColors.soil : Colors.black,
                     fontSize: 10),
               )
             ],
           ),
+
         ],
       ),
     );
@@ -483,6 +490,30 @@ class _Page4State extends State<Page4> {
 
 
   @override
+  void initState() {
+    super.initState();
+
+
+  }
+
+
+
+    void sendPayment() async {
+      String url = 'upi://pay?pa=address@okhdfcbank&pn=Payee Name&tn=Payment Message&cu=INR';
+     // String url='8660305451';
+      Uri upiurl = Uri( path: url);
+
+      if (await canLaunchUrl(upiurl)) {
+        await launchUrl(upiurl);
+      } else {
+        throw 'Sorry! can\'t able call $upiurl';
+      }
+
+    }
+
+
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -490,15 +521,30 @@ class _Page4State extends State<Page4> {
         body: SingleChildScrollView(
           child: Container(
             width: MediaQuery.of(context).size.width,
-            color: Colors.tealAccent,
-            height: 100,
-            padding: const EdgeInsets.only(top: 5),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    sendPayment();
+                  },
+                  child: Container(
+                    height: 50,
+                      width: 250,
+                      color:AppColors.grey,
+            child: Center(child: Text("Pay"))),
+                )
+
+              ],
+            ),
 
           ),
         ),
       ),
     );
   }
+
+
+
 }
 
 class Page5 extends StatefulWidget {
