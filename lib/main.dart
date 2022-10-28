@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nammavaru/screens/Home.dart';
 import 'package:nammavaru/screens/Login.dart';
+import 'package:nammavaru/screens/Privacy.dart';
 import 'package:nammavaru/screens/Profile.dart';
 import 'package:nammavaru/screens/Register.dart';
 import 'package:nammavaru/screens/Splash.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => Home(),
         '/profile': (context) => Profile(),
         '/register': (context) => Register(),
+        '/privacy': (context) => Privacy(),
 
       },
     );

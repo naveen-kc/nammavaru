@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:math';
+import 'package:carousel_slider/carousel_slider.dart';
 
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:upi_pay/upi_pay.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/Helpers.dart';
@@ -159,6 +159,7 @@ class _HomeState extends State<Home> {
                 title: const Text('Privacy Policy'),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, '/privacy');
                 },
               ),
               ListTile(
@@ -385,6 +386,11 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
+  final List<String> imageList = [
+    'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
+    'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
+    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+  ];
 
   bool loading =false;
 
@@ -404,19 +410,49 @@ class _Page1State extends State<Page1> {
         color: AppColors.white,
         height: MediaQuery.of(context).size.height,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
             children: [
-          Container(
-            padding: EdgeInsets.only(bottom: 10),
-            height: MediaQuery.of(context).size.height*0.2,
-            color: Colors.amber,
-            child: Center(
-              child: Text(
-                'Home Page'
+              CarouselSlider.builder(
+                itemCount: imageList.length,
+                options: CarouselOptions(
+                  viewportFraction: 0.93,
+                  enlargeCenterPage: false,
+                  height: 150,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 4),
+                  reverse: false,
+                  aspectRatio: 5,
+                ),
+                itemBuilder: (context, i, id) {
+                  //for onTap to redirect to another screen
+                  return GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.transparent,
+                            )),
+                        //ClipRRect for image border radius
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            imageList[i],
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      var url = imageList[i];
+                      print(url.toString());
+                    },
+                  );
+                },
               ),
-            ),
 
-          ),
         ]),
       ),
     );
@@ -488,61 +524,18 @@ class Page4 extends StatefulWidget {
 }
 
 class _Page4State extends State<Page4> {
-   String _upiAddrError='';
-
   Helpers helpers=Helpers();
-  final _upiAddressController = TextEditingController();
-  final _amountController = TextEditingController();
-
-  bool _isUpiEditable = false;
-  late Future<List<ApplicationMeta>> _appsFuture;
 
   @override
   void initState() {
     super.initState();
-    _amountController.text =
-        (Random.secure().nextDouble() * 10).toStringAsFixed(2);
-    _appsFuture = UpiPay.getInstalledUpiApplications();
+
 
   }
-
-  @override
-  void dispose() {
-    _amountController.dispose();
-    _upiAddressController.dispose();
-    super.dispose();
-  }
-
-  void _generateAmount() {
-    setState(() {
-      _amountController.text =
-          (Random.secure().nextDouble() * 10).toStringAsFixed(2);
-    });
-  }
-
-
-  Future<void> _onTap(ApplicationMeta app) async {
-    
-      
-      
-    final transactionRef = Random.secure().nextInt(1 << 32).toString();
-    print("Starting transaction with id $transactionRef");
-
-    final a = await UpiPay.initiateTransaction(
-      amount: _amountController.text,
-      app: app.upiApplication,
-      receiverName: 'Sharad',
-      receiverUpiAddress: _upiAddressController.text,
-      transactionRef: transactionRef,
-    );
-
-    print(a);
-  }
-
 
 
     void sendPayment() async {
-      /*String url = 'upi://pay?pa=9482759828@ybl&pn=Payee Name&tn=Payment Message&cu=INR';
+      /*String url = 'upi://pay?pa=8904102726@ybl&pn=Rakesh&am=1&tn=Test Payment&cu=INR';
      // String url='8660305451';
       Uri upiurl = Uri( path: url);
 
@@ -552,10 +545,17 @@ class _Page4State extends State<Page4> {
         throw 'Sorry! can\'t able call $upiurl';
       }*/
 
+      String _url='upi://pay?pa=8904102726@ybl&pn=Rakesh&am=1&tn=Test Payment&cu=INR';
+      var result = await launch(_url);
+      debugPrint(result.toString());
+      if (result ==true) {
+        print("Done");
+      } else if (result ==false){
+        print("Fail");
+      }
 
 
     }
-
 
 
   @override
@@ -565,128 +565,21 @@ class _Page4State extends State<Page4> {
         backgroundColor: Color.fromRGBO(238, 240, 234, 1),
         body: SingleChildScrollView(
           child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child:ListView(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 32),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextFormField(
-                          controller: _upiAddressController,
-                          enabled: _isUpiEditable,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'address@upi',
-                            labelText: 'Receiving UPI Address',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 8),
-                        child: IconButton(
-                          icon: Icon(
-                            _isUpiEditable ? Icons.check : Icons.edit,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isUpiEditable = !_isUpiEditable;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+            height: 50,
+            width: 200,
+            child:GestureDetector(
+              onTap: (){
+                sendPayment();
+              },
+              child: Container(
+                color: AppColors.cardBlue,
+                child: Center(
+                 child: Text('Pay',
+                 style: TextStyle(
+                   color: AppColors.black
+                 ),)
                 ),
-                if (_upiAddrError != null)
-                  Container(
-                    margin: EdgeInsets.only(top: 4, left: 12),
-                    child: Text(
-                      _upiAddrError,
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                Container(
-                  margin: EdgeInsets.only(top: 32),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _amountController,
-                          readOnly: true,
-                          enabled: false,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Amount',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 8),
-                        child: IconButton(
-                          icon: Icon(Icons.loop),
-                          onPressed: _generateAmount,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 128, bottom: 32),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          'Pay Using',
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      ),
-                      FutureBuilder<List<ApplicationMeta>>(
-                        future: _appsFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState != ConnectionState.done) {
-                            return Container();
-                          }
-                          return GridView.count(
-                            crossAxisCount: 2,
-                            shrinkWrap: true,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                            childAspectRatio: 1.6,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: snapshot.data!.map((it) => Material(
-                              key: ObjectKey(it.upiApplication!),
-                              color: Colors.grey[200],
-                              child: InkWell(
-                                onTap: () => _onTap(it),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.asset(helpers.person
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        it.upiApplication.getAppName(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ))
-                                .toList(),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ],
+              ),
             ),
           ),
         ),
