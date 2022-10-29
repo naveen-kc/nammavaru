@@ -71,7 +71,7 @@ class _NoInternetState extends State<NoInternet> {
                 elevation: 0.0,
                 borderRadius: BorderRadius.circular(10),
                 textColor: AppColors.white,
-                backgroundColor: AppColors.black,
+                backgroundColor: AppColors.soil,
                 text: 'Okay',
                 width: MediaQuery.of(context).size.width,
                 height: 20,

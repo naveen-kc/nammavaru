@@ -25,7 +25,7 @@ class _RegisterState extends State<Register> {
   TextEditingController nameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
+  TextEditingController VillageController = TextEditingController();
 
   double percentage = 0.1;
   bool imageSelected= false;
@@ -35,7 +35,7 @@ class _RegisterState extends State<Register> {
   String dob='';
   String gender='';
   String address='';
-  String city='';
+  String Village='';
   String pincode='';
   String state='';
   bool loading=false;
@@ -398,15 +398,15 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: EdgeInsets.all(15.0),
                   child: TextField(
-                    controller:cityController,
+                    controller:VillageController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
                               color: Colors.grey
                           )
                       ),
-                      labelText: 'City',
-                      hintText: 'City',
+                      labelText: 'Village',
+                      hintText: 'Village',
                       hintStyle: TextStyle(
                         fontFamily: 'HindRegular',
                       ),
@@ -421,7 +421,7 @@ class _RegisterState extends State<Register> {
                     onChanged: (value){
                       setState((){
                         percentage =  0.6;
-                        city=cityController.text;
+                        Village=VillageController.text;
                       });
                     },
                   ),

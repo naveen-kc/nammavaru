@@ -3,6 +3,7 @@ import 'dart:io';
 class Helpers {
   var pottering = "assets/images/pottering.jpg";
   var person = "assets/images/person.png";
+  var rupee = "assets/images/rupee.png";
 
 
 
