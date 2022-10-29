@@ -331,9 +331,10 @@ class _HomeState extends State<Home> {
       ),
       backgroundColor: AppColors.soil,
       actions: [
-        Padding(
+       if(pageIndex==0) Padding(
           padding: const EdgeInsets.only(right: 20.0),
-          child: Icon(Icons.add_photo_alternate_rounded, color: Colors.white),
+          child: Icon(Icons.add_photo_alternate_rounded,
+              color: Colors.white),
         ),
       ],
       flexibleSpace: Container(
@@ -571,7 +572,7 @@ class _Page1State extends State<Page1> {
                                             decoration: BoxDecoration(
                                               borderRadius:
                                               BorderRadius.circular(10),
-                                              color:AppColors.lineGrey,
+                                              color:AppColors.divider_line,
                                             ),
                                             height: 80,
                                             child: ListTile(
@@ -594,10 +595,7 @@ class _Page1State extends State<Page1> {
                                                   ),
                                                 ),
                                               ),
-                                              title: Padding(
-                                                padding:
-                                                const EdgeInsets.only(top: 10),
-                                                child: Column(
+                                              title:  Column(
                                                   crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                                   children: [
@@ -607,6 +605,7 @@ class _Page1State extends State<Page1> {
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                         color: Colors.black,
+                                                        fontFamily: 'HindBold'
                                                       ),
                                                     ),
 
@@ -616,6 +615,7 @@ class _Page1State extends State<Page1> {
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                         color: AppColors.grey,
+                                                          fontFamily: 'HindMedium'
                                                       ),
                                                     ),
                                                     Text(
@@ -623,12 +623,12 @@ class _Page1State extends State<Page1> {
                                                       ['time'],
                                                       style: TextStyle(
                                                         fontSize: 12,
-                                                        color: AppColors.grey
+                                                        color: AppColors.grey,
+                                                          fontFamily: 'HindRegular'
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
                                             ),
                                           ),
                                         ),
@@ -691,12 +691,98 @@ class Page2 extends StatefulWidget {
 class _Page2State extends State<Page2> {
   Helpers helpers=Helpers();
   List<dynamic> amountList=[{"amt":"50"},{"amt":"100"},{"amt":"250"},{"amt":"500"},{"amt":"1000"},{"amt":"2000"},];
+  TextEditingController amountController = TextEditingController();
+  TextEditingController reasonController = TextEditingController();
+  String amount='';
+  String reason='';
+  int selectedAmt=1;
 
   @override
   void initState() {
     super.initState();
+  }
 
+  void openAmountDialog()async{
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Center(
+                child: Text(
+                  'Enter amount in rupees',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              content: Container(
+                height: 200,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(5, 15, 5, 15),
+                        child: SizedBox(
+                          height: 50,
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: amountController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.grey
+                                  )
+                              ),
+                              labelText: 'Amount',
+                              hintText: 'Amount',
+                              labelStyle: TextStyle(
+                                  color: Colors.black
+                              ),focusedBorder:OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.black,
+                              ),
+                            ),
+                            ),
+                            onChanged: (value){
+                              setState((){
+                                amount=amountController.text;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Button(
+                        elevation: 0.0,
+                        borderRadius: BorderRadius.circular(10),
+                        textColor: Colors.white,
+                        backgroundColor: AppColors.soil,
+                        text: 'Okay',
+                        width: MediaQuery.of(context).size.width,
+                        height: 20,
+                        onPressed: () {
+                          setState((){
+                            amount=amountController.text;
+                          });
+                          Navigator.pop(context,true);
 
+                        }, fontFamily: 'HindBold',
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        });
   }
 
 
@@ -711,14 +797,28 @@ class _Page2State extends State<Page2> {
         throw 'Sorry! can\'t able call $upiurl';
       }*/
 
-    String _url='upi://pay?pa=9482759828@ybl&pn=Rakesh&am=1&tn=Test Payment&cu=INR';
-    var result = await launch(_url);
-    debugPrint(result.toString());
-    if (result ==true) {
-      print("Done");
-    } else if (result ==false){
-      print("Fail");
+    if(amount.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter Amount",
+              description: "Please enter the amount you want pay",
+            );
+          });
+    }else{
+      String _url='upi://pay?pa=9482759828@ybl&pn=Rakesh&am='+amount+'&tn=Test Payment&cu=INR';
+      var result = await launch(_url);
+      debugPrint(result.toString());
+      if (result ==true) {
+        print("Done");
+      } else if (result ==false){
+        print("Fail");
+      }
     }
+
+
 
 
   }
@@ -755,55 +855,129 @@ class _Page2State extends State<Page2> {
               ),
 
 
-              Container(
-                height: MediaQuery.of(context).size.height*0.4,
-                  padding: EdgeInsets.all(20.0),
-                  child: GridView.builder(
-                    itemCount: amountList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 2.0,
-                        mainAxisSpacing: 2.0
-                    ),
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Column(
-                          children: [
-                            Container(
-                              height:110,
-                                width: MediaQuery.of(context).size.width*0.3,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(color: AppColors.lightGrey2, spreadRadius: 1),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 20,),
-                                    SizedBox(
-                                      height:50,
-                                        width:50,
-                                        child: Image.asset(helpers.rupee)),
-                                    Text(
-                                        amountList[index]['amt'],
-                                      style: TextStyle(
-                                        color: AppColors.black,
-                                        fontFamily: 'HindBold'
+              Column(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.4,
+                      padding: EdgeInsets.all(20.0),
+                      child: GridView.builder(
+                        itemCount: amountList.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 2.0,
+                            mainAxisSpacing: 2.0
+                        ),
+                        itemBuilder: (BuildContext context, int index){
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  onTap:(){
+                                    setState((){
+                                      selectedAmt=index;
+                                    });
+                                    setState((){
+                                      amount=amountList[selectedAmt]['amt'];
+                                    });
+
+                              },
+                                  child: Container(
+                                    height:110,
+                                      width: MediaQuery.of(context).size.width*0.3,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color:selectedAmt==index?AppColors.black: AppColors.lightGrey2,
+                                              spreadRadius:selectedAmt==index?2: 1),
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 20,),
+                                          SizedBox(
+                                            height:30,
+                                              width:30,
+                                              child: Image.asset(helpers.rupee)),
+                                          SizedBox(height: 5,),
+                                          Text(
+                                              amountList[index]['amt'],
+                                            style: TextStyle(
+                                              color: AppColors.black,
+                                              fontFamily: 'HindBold',
+                                              fontSize: 25
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  ),
                                 ),
+
+
+
+                              ],
                             ),
-
-
+                          );
+                        },
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                    child: GestureDetector(
+                      onTap: (){
+                        openAmountDialog();
+                      },
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
                           ],
                         ),
-                      );
-                    },
-                  )),
+                        child: Center(
+                            child: Text(
+                            'Enter Amount Manually',
+                              style: TextStyle(
+                                color: AppColors.darkSoil
+                              ),
+                          ),
+                        )
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                child: TextField(
+                  controller: reasonController,
+                  keyboardType: TextInputType.text,
+                  onChanged: (value){
+                    reason=reasonController.text;
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.grey
+                        )
+                    ),
+                    hintText: 'Enter reason or note',
+                    hintStyle: TextStyle(
+                        fontFamily: 'HindRegular'
+                    ),
+                    labelStyle: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'HindRegular',
+                    ),focusedBorder:OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black,
+                    ),
+                  ),
+                  ),
+                ),
+              ),
 
               Container(
                 padding: EdgeInsets.all(20),
@@ -848,14 +1022,136 @@ class Page3 extends StatefulWidget {
 
 class _Page3State extends State<Page3> {
 
-
+  List<dynamic> achievers=[
+    {"name":"Sarvajna","village":"Karnataka","image":"https://www.shutterstock.com/image-photo/pair-young-people-test-drive-600w-2034171992.jpg","time":"10:30PM 22/10/2022","description":"Sarvajña was a Kannada poet, pragmatist and philosopher of the 16th century. The word Sarvajna in Sanskrit literally means the all knowing. His father was Kumbara Malla and his mother was Mallaladevi. His birth anniversary is celebrated on February 20 every year. He belongs to the cast of Kumbara.Sarvajna was a Kannada poet, pragmatist and philosopher. He is famous for his pithy three-lined poems which are called tripadis, with three padas[disambiguation needed], three-liners, a form of Vachanas. He is also referred as Sarvagna in modern translation."},
+    {"name":"Gowtham Kulal","village":"Kalkatte","image":"https://www.shutterstock.com/image-photo/tasikmalaya-west-java-indonesia-november-600w-2081072653.jpg","time":"02:10PM 22/09/2022","description":"Madhvacharya also known as Purna Prajna and Ananda Tirtha, was the chief proponent of Tattvavada philosophy of reality, popularly known as the Dvaita (dualism) school of Hindu philosophy. It is one of the three most influential Vedanta philosophies. Madhvacarya was one of the important philosophers during the Bhakti movement. He was a pioneer in many ways, going against standard conventions and norms. According to tradition, Madhvacarya is believed to be the third incarnation of Vayu (Mukhyaprana) and first two being Hanuman and Bhima."},
+    {"name":"Chandrashekar","village":"Menase","image":"https://img.traveltriangle.com/blog/wp-content/uploads/2017/05/Assamese-women-and-men-dancing-during-Bihu-festival-ss22052017.jpg","time":"10:05PM 22/11/2022","description":"Madhvacharya also known as Purna Prajna and Ananda Tirtha, was the chief proponent of Tattvavada philosophy of reality, popularly known as the Dvaita (dualism) school of Hindu philosophy. second prize and would like to improve and show case our culture to the world, I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world"},
+    {"name":"Uday","village":"Menase","image":"https://lostwithpurpose.com/wp-content/uploads/2016/11/DSC_1625.jpg","time":"11:30PM 08/10/2022","description":"Celebrated deepavali in our village with all our community people makes so ,Madhvacharya also known as Purna Prajna and Ananda Tirtha, was the chief proponent of Tattvavada philosophy of reality, popularly known as the Dvaita (dualism) school of Hindu philosophy."}
+  ];
+  Helpers helpers=Helpers();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body: SafeArea(child: Container(
+      body: SafeArea(child:
+      Container(
         color: AppColors.grey,
+        child:  Expanded(
+          child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: achievers.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          //height: 300,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
+                            ],
+                          ),
+                          margin: EdgeInsets.zero,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                                  child: GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        color:AppColors.divider_line,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                            child: SizedBox(
+                                              height: 80,
+                                              width: 80,
+                                              child: CircleAvatar(
+                                                radius: 60,
+                                                backgroundColor: Colors.white,
+                                                child: CircleAvatar(
+                                                  backgroundColor: Colors.black,
+                                                  radius: 55.0,
+                                                  backgroundImage: AssetImage(
+                                                    helpers.sarvajna,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                achievers[index]
+                                                ['name'],
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                  fontFamily: 'HindBold'
+                                                ),
+                                              ),
+
+                                              Text(
+                                                achievers[index]
+                                                ['village'],
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: AppColors.grey,
+                                                    fontFamily: 'HindMedium'
+                                                ),
+                                              ),
+
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      15, 5, 15, 15),
+                                  child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                      child: Text(achievers[index]["description"],
+                                        style: TextStyle(
+                                            color: AppColors.black,
+                                            fontFamily: 'HindMedium',
+                                            fontSize: 15
+                                        ),
+
+                                      )
+                                  ),
+
+                                ),
+
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+        ),
       ),
 
       ),
@@ -873,14 +1169,155 @@ class Page4 extends StatefulWidget {
 }
 
 class _Page4State extends State<Page4> {
+  Helpers helpers=Helpers();
+
+  List<dynamic> paymentList = [
+    {
+      "reason": "Construction of Kulal Bhavana",
+      "amount": "45,000",
+      "date": "22/07/2021, 11:30 AM",
+      "status": '1'
+    },
+    {
+
+      "reason": "Construction of Kumbara School",
+      "amount": "25,000",
+      "date": "24/01/2022, 7:39 PM",
+      "status": '0'
+    },
+    {
+      "reason": "1st ceremony of kulal sangha",
+      "amount": "36,000",
+      "date": "02/04/2020, 1:50 AM",
+      "status": '-1'
+    },
+
+
+  ];
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: SafeArea(
-        child: Container(
-          color: Colors.green,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                color: Colors.white,
+                child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: paymentList.length,
+                    itemBuilder: (context, index) {
+                      return Column(children: <Widget>[
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 8, 8),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: CircleAvatar(
+                                      backgroundColor:AppColors.soil,
+                                      child: Icon(
+                                        Icons.arrow_circle_up,
+                                        color: AppColors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Paid for",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                        fontFamily: 'HindMedium'),
+                                      ),
+                                      Text(paymentList[index]['reason'],
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                              fontFamily: 'HindMedium'))
+                                    ],
+                                  ),
+                                  trailing: Padding(
+                                    padding: const EdgeInsets.only(bottom: 35),
+                                    child: Text(
+                                        '₹ ' + paymentList[index]['amount'],
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.black,
+                                            fontFamily: 'HindMedium')),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(10, 15, 5, 0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        paymentList[index]['date'],
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.grey,
+                                            fontFamily: 'HindRegular'),
+                                      ),
+                                      Spacer(),
+                                      Icon(
+                                        paymentList[index]['status'] == '1'
+                                            ? Icons.check_circle
+                                            : paymentList[index]['status'] ==
+                                            '0'
+                                            ? Icons.dangerous_rounded
+                                            : Icons.info,
+                                        color: paymentList[index]['status'] ==
+                                            '1'
+                                            ? Colors.green
+                                            : paymentList[index]['status'] ==
+                                            '0'
+                                            ? Colors.red
+                                            : Colors.orange,
+                                        size: 18,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 5),
+                                        child: Text(
+                                          paymentList[index]['status'] == '1'
+                                              ? 'Successful'
+                                              : paymentList[index]['status'] ==
+                                              '0'
+                                              ? 'Failed'
+                                              : 'Pending',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                              fontFamily: 'HindRegular'
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
+                        Divider(
+                          height: 1,
+                          color: Colors.grey[200],
+                          thickness: 2,
+                        )
+                      ]);
+                    }),
+              ),
+            ],
+          ),
+
         ),
 
       ),

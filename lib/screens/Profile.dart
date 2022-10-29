@@ -286,7 +286,7 @@ class _LoginState extends State<Profile> {
                                       backgroundColor: Colors.black,
                                       radius: 55.0,
                                       backgroundImage: AssetImage(
-                                        profile,
+                                        helpers.american,
                                       ),
                                     ),
                                   ),

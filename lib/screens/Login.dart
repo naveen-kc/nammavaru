@@ -6,6 +6,7 @@ import '../utils/helpers.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/no_internet.dart';
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -20,10 +21,31 @@ class _LoginState extends State<Login> {
   String email='';
   String mobile='';
   var ctime;
+  bool isInternet=false;
 
+
+  @override
+  void initState(){
+    super.initState();
+
+  }
 
   void userLogin() async{
-    if(email.isEmpty){
+    isInternet = await Helpers().isInternet();
+    if(!isInternet){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return NoInternet(
+              header: "No Internet",
+              description:
+              "Please check your data connectivity or try again in some time.",
+              move: '/login',
+            );
+          });
+    }
+   else if(email.isEmpty){
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -126,6 +148,8 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.all(15.0),
                   child: TextField(
+                    keyboardType: TextInputType.phone,
+                    //maxLength: 10,
                     controller: mobileController,
                     onChanged: (value){
                       mobile=mobileController.text;

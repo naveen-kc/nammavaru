@@ -4,6 +4,8 @@ class Helpers {
   var pottering = "assets/images/pottering.jpg";
   var person = "assets/images/person.png";
   var rupee = "assets/images/rupee.png";
+  var american = "assets/images/american.jpg";
+  var sarvajna = "assets/images/sarvajna.jpg";
 
 
 
