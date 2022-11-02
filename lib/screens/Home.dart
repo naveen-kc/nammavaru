@@ -828,7 +828,8 @@ class _Page2State extends State<Page2> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(238, 240, 234, 1),
-        body: SingleChildScrollView(
+        body:Scrollbar(
+        child:SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -860,67 +861,69 @@ class _Page2State extends State<Page2> {
                   Container(
                     height: MediaQuery.of(context).size.height*0.4,
                       padding: EdgeInsets.all(20.0),
-                      child: GridView.builder(
-                        itemCount: amountList.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 2.0,
-                            mainAxisSpacing: 2.0
-                        ),
-                        itemBuilder: (BuildContext context, int index){
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  onTap:(){
-                                    setState((){
-                                      selectedAmt=index;
-                                    });
-                                    setState((){
-                                      amount=amountList[selectedAmt]['amt'];
-                                    });
+                      child: Scrollbar(
+                        child: GridView.builder(
+                          itemCount: amountList.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 2.0,
+                              mainAxisSpacing: 2.0
+                          ),
+                          itemBuilder: (BuildContext context, int index){
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap:(){
+                                      setState((){
+                                        selectedAmt=index;
+                                      });
+                                      setState((){
+                                        amount=amountList[selectedAmt]['amt'];
+                                      });
 
-                              },
-                                  child: Container(
-                                    height:110,
-                                      width: MediaQuery.of(context).size.width*0.3,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color:selectedAmt==index?AppColors.black: AppColors.lightGrey2,
-                                              spreadRadius:selectedAmt==index?2: 1),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(height: 20,),
-                                          SizedBox(
-                                            height:30,
-                                              width:30,
-                                              child: Image.asset(helpers.rupee)),
-                                          SizedBox(height: 5,),
-                                          Text(
-                                              amountList[index]['amt'],
-                                            style: TextStyle(
-                                              color: AppColors.black,
-                                              fontFamily: 'HindBold',
-                                              fontSize: 25
+                                },
+                                    child: Container(
+                                      height:110,
+                                        width: MediaQuery.of(context).size.width*0.3,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:selectedAmt==index?AppColors.black: AppColors.lightGrey2,
+                                                spreadRadius:selectedAmt==index?2: 1),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 20,),
+                                            SizedBox(
+                                              height:30,
+                                                width:30,
+                                                child: Image.asset(helpers.rupee)),
+                                            SizedBox(height: 5,),
+                                            Text(
+                                                amountList[index]['amt'],
+                                              style: TextStyle(
+                                                color: AppColors.black,
+                                                fontFamily: 'HindBold',
+                                                fontSize: 25
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
+                                    ),
                                   ),
-                                ),
 
 
 
-                              ],
-                            ),
-                          );
-                        },
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       )),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
@@ -1002,6 +1005,7 @@ class _Page2State extends State<Page2> {
             ],
           ),
         ),
+        )
       ),
     );
   }
@@ -1036,121 +1040,125 @@ class _Page3State extends State<Page3> {
       body: SafeArea(child:
       Container(
         color: AppColors.grey,
-        child:  Expanded(
-          child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: achievers.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          //height: 300,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
-                            ],
-                          ),
-                          margin: EdgeInsets.zero,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(10),
-                                        color:AppColors.divider_line,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                            child: SizedBox(
-                                              height: 80,
-                                              width: 80,
-                                              child: CircleAvatar(
-                                                radius: 60,
-                                                backgroundColor: Colors.white,
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.black,
-                                                  radius: 55.0,
-                                                  backgroundImage: AssetImage(
-                                                    helpers.sarvajna,
+        child:  Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: achievers.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              //height: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
+                                ],
+                              ),
+                              margin: EdgeInsets.zero,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            color:AppColors.divider_line,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                                child: SizedBox(
+                                                  height: 80,
+                                                  width: 80,
+                                                  child: CircleAvatar(
+                                                    radius: 60,
+                                                    backgroundColor: Colors.white,
+                                                    child: CircleAvatar(
+                                                      backgroundColor: Colors.black,
+                                                      radius: 55.0,
+                                                      backgroundImage: AssetImage(
+                                                        helpers.sarvajna,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                achievers[index]
-                                                ['name'],
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black,
-                                                  fontFamily: 'HindBold'
-                                                ),
-                                              ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    achievers[index]
+                                                    ['name'],
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black,
+                                                      fontFamily: 'HindBold'
+                                                    ),
+                                                  ),
 
-                                              Text(
-                                                achievers[index]
-                                                ['village'],
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: AppColors.grey,
-                                                    fontFamily: 'HindMedium'
-                                                ),
-                                              ),
+                                                  Text(
+                                                    achievers[index]
+                                                    ['village'],
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: AppColors.grey,
+                                                        fontFamily: 'HindMedium'
+                                                    ),
+                                                  ),
 
+                                                ],
+                                              ),
                                             ],
-                                          ),
-                                        ],
-                                      )
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      15, 5, 15, 15),
-                                  child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                      child: Text(achievers[index]["description"],
-                                        style: TextStyle(
-                                            color: AppColors.black,
-                                            fontFamily: 'HindMedium',
-                                            fontSize: 15
+                                          )
                                         ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 5, 15, 15),
+                                      child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                          child: Text(achievers[index]["description"],
+                                            style: TextStyle(
+                                                color: AppColors.black,
+                                                fontFamily: 'HindMedium',
+                                                fontSize: 15
+                                            ),
 
-                                      )
-                                  ),
+                                          )
+                                      ),
 
+                                    ),
+
+
+                                  ],
                                 ),
-
-
-                              ],
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              }),
+                    );
+                  }),
+            ),
+          ],
         ),
       ),
 
