@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
@@ -726,11 +727,6 @@ class _Page5State extends State<Page5> {
   Helpers helpers=Helpers();
   List<dynamic> gallery=[{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},];
 
-  @override
-  void initState() {
-    super.initState();
-
-  }
 
 
   @override
@@ -826,7 +822,9 @@ class _Page5State extends State<Page5> {
                                             ),
                                             trailing: IconButton(
                                                 icon:  Icon(Icons.arrow_forward_rounded),
-                                                onPressed: () {  },
+                                                onPressed: () {
+                                                  Navigator.pushNamed(context, '/detailedGallery');
+                                                },
                                               ),
 
                                           ),

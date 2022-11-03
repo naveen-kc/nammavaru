@@ -57,7 +57,7 @@ class _AppDialogState extends State<AppDialog> {
                 child: widget.header==null||widget.header.toString().isEmpty? null:Text(
                   widget.header!,
                   style: TextStyle(
-                      fontFamily: 'OpenBold',
+                      fontFamily: 'HindBold',
                       fontSize: 18.0,
                       color: widget.textColor==null? AppColors.black:widget.textColor),
                 ),

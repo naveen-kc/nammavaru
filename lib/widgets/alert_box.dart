@@ -58,7 +58,7 @@ class _AppDialogState extends State<AlertBox> {
                 child: Text(
                   widget.header,
                   style: TextStyle(
-                      fontFamily: 'OpenBold',
+                      fontFamily: 'HindBold',
                       fontSize: 18.0,
                       color: widget.textColor==null? AppColors.black:widget.textColor),
                 ),

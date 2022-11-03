@@ -19,7 +19,7 @@ class Privacy extends StatelessWidget {
           elevation: 0,
           title: Text(
             "Privacy & Policy",
-            style: TextStyle(fontFamily: 'OpenBold', color: AppColors.black),
+            style: TextStyle(fontFamily: 'HindBold', color: AppColors.black),
           )),
       body: Container(
         margin: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 0.0),

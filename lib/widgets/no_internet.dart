@@ -46,7 +46,7 @@ class _NoInternetState extends State<NoInternet> {
                 child: Text(
                   widget.header,
                   style: TextStyle(
-                      fontFamily: 'OpenBold',
+                      fontFamily: 'HindBold',
                       fontSize: 18.0,
                       color: AppColors.black),
                 ),
