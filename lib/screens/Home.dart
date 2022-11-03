@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
 
   final pages = [
     const Page1(),
+    const Page5(),
     const Page2(),
     const Page3(),
     const Page4(),
@@ -229,10 +230,40 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   setState(() {
                     pageIndex = 1;
-                    appBarName = "Donate";
+                    appBarName = "Gallery";
                   });
                 },
                 icon: pageIndex == 1
+                    ? const Icon(
+                  Icons.image,
+                  color: AppColors.soil,
+                  size: 30,
+                )
+                    : const Icon(
+                  Icons.image_outlined,
+                  color: Colors.black,
+                  size: 30,
+                ),
+              ),
+              Text(
+                "Gallery",
+                style: TextStyle(
+                    color: pageIndex == 1 ? AppColors.soil : Colors.black,
+                    fontSize: 10),
+              )
+            ],
+          ),
+          Column(
+            children: [
+              IconButton(
+                enableFeedback: false,
+                onPressed: () {
+                  setState(() {
+                    pageIndex = 2;
+                    appBarName = "Donate";
+                  });
+                },
+                icon: pageIndex == 2
                     ? const Icon(
                   Icons.payments,
                   color: AppColors.soil,
@@ -247,7 +278,7 @@ class _HomeState extends State<Home> {
               Text(
                 "Donate",
                 style: TextStyle(
-                    color: pageIndex == 1 ? AppColors.soil : Colors.black,
+                    color: pageIndex == 2 ? AppColors.soil : Colors.black,
                     fontSize: 10),
               )
             ],
@@ -258,11 +289,11 @@ class _HomeState extends State<Home> {
                 enableFeedback: false,
                 onPressed: () {
                   setState(() {
-                    pageIndex = 2;
+                    pageIndex = 3;
                     appBarName = "Achievers";
                   });
                 },
-                icon: pageIndex == 2
+                icon: pageIndex == 3
                     ? const Icon(
                   Icons.school_rounded,
                   color: AppColors.soil,
@@ -277,7 +308,7 @@ class _HomeState extends State<Home> {
               Text(
                 "Achievers",
                 style: TextStyle(
-                    color: pageIndex == 2 ? AppColors.soil : Colors.black,
+                    color: pageIndex == 3 ? AppColors.soil : Colors.black,
                     fontSize: 10),
               )
             ],
@@ -289,12 +320,12 @@ class _HomeState extends State<Home> {
                 enableFeedback: false,
                 onPressed: () {
                   setState(() {
-                    pageIndex = 3;
+                    pageIndex = 4;
                     appBarName = "Payment History";
                   });
                 },
 
-    icon: pageIndex == 3
+    icon: pageIndex == 4
     ? const Icon(
     Icons.library_books,
     color: AppColors.soil,
@@ -311,7 +342,7 @@ class _HomeState extends State<Home> {
               Text(
                 "Payment History",
                 style: TextStyle(
-                    color: pageIndex == 3 ? AppColors.soil : Colors.black,
+                    color: pageIndex == 4 ? AppColors.soil : Colors.black,
                     fontSize: 10),
               )
             ],
@@ -349,20 +380,20 @@ class _HomeState extends State<Home> {
   }
 }
 
+//Home
 class Page1 extends StatefulWidget {
   const Page1({Key? key}) : super(key: key);
 
   @override
   State<Page1> createState() => _Page1State();
 }
-
 class _Page1State extends State<Page1> {
   final List<String> imageList = [
     'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
-  
+
   List<dynamic> updates=[
     {"name":"Navee K C","village":"Kalkatte","image":"https://www.shutterstock.com/image-photo/pair-young-people-test-drive-600w-2034171992.jpg","time":"10:30PM 22/10/2022","description":"Happy to share that we bought a new electric scooter"},
     {"name":"Gowtham Kulal","village":"Kalkatte","image":"https://www.shutterstock.com/image-photo/tasikmalaya-west-java-indonesia-november-600w-2081072653.jpg","time":"02:10PM 22/09/2022","description":"Started cultivation at our grassland as the rainy season starts"},
@@ -681,13 +712,155 @@ class _Page1State extends State<Page1> {
   }
 }
 
+//Gallery
+class Page5 extends StatefulWidget {
+  const Page5({Key? key}) : super(key: key);
+
+  @override
+  State<Page5> createState() => _Page5State();
+}
+
+class _Page5State extends State<Page5> {
+
+  bool loading =false;
+  Helpers helpers=Helpers();
+  List<dynamic> gallery=[{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},];
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return loading
+        ? Loader()
+        : SafeArea(
+      child: Container(
+        color: AppColors.white,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: gallery.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              //height: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
+                                ],
+                              ),
+                              margin: EdgeInsets.zero,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            color:AppColors.divider_line,
+                                          ),
+                                          height: 80,
+                                          child: ListTile(
+                                            leading: Padding(
+                                              padding:
+                                              const EdgeInsets.only(top: 0),
+                                              child: SizedBox(
+                                                height: 50,
+                                                width: 50,
+                                                child: CircleAvatar(
+                                                  radius: 60,
+                                                  backgroundColor: Colors.white,
+                                                  child: CircleAvatar(
+                                                    backgroundColor: Colors.black,
+                                                    radius: 55.0,
+                                                    backgroundImage: AssetImage(
+                                                      helpers.pottering,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            title:  Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  gallery[index]
+                                                  ['name'],
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black,
+                                                      fontFamily: 'HindBold'
+                                                  ),
+                                                ),
+
+
+                                                Text(
+                                                  "On "+gallery[index]
+                                                  ['date'],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: AppColors.grey,
+                                                      fontFamily: 'HindRegular'
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            trailing: IconButton(
+                                                icon:  Icon(Icons.arrow_forward_rounded),
+                                                onPressed: () {  },
+                                              ),
+
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+
+
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+//Donate
 class Page2 extends StatefulWidget {
   const Page2({Key? key}) : super(key: key);
 
   @override
   State<Page2> createState() => _Page2State();
 }
-
 class _Page2State extends State<Page2> {
   Helpers helpers=Helpers();
   List<dynamic> amountList=[{"amt":"50"},{"amt":"100"},{"amt":"250"},{"amt":"500"},{"amt":"1000"},{"amt":"2000"},];
@@ -1009,21 +1182,16 @@ class _Page2State extends State<Page2> {
       ),
     );
   }
-
-
-
-
-
 }
 
 
+//Achievers
 class Page3 extends StatefulWidget {
   const Page3({Key? key}) : super(key: key);
 
   @override
   State<Page3> createState() => _Page3State();
 }
-
 class _Page3State extends State<Page3> {
 
   List<dynamic> achievers=[
@@ -1169,6 +1337,9 @@ class _Page3State extends State<Page3> {
 
 }
 
+
+
+//Payment History
 class Page4 extends StatefulWidget {
   const Page4({Key? key}) : super(key: key);
 
