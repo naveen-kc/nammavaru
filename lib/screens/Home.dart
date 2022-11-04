@@ -725,7 +725,7 @@ class _Page5State extends State<Page5> {
 
   bool loading =false;
   Helpers helpers=Helpers();
-  List<dynamic> gallery=[{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},];
+  List<dynamic> gallery=[{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Varshikotsava","date":"22/10/2022"},{"name":"Saraswathi pooja","date":"22/01/2022"},{"name":"Farewell","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},];
 
 
 

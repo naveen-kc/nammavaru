@@ -43,6 +43,7 @@ dependencies:
   flutter_html: ^3.0.0-alpha.3
   carousel_slider: ^4.0.0
   youtube_player_flutter: ^8.1.1
+  fluttertoast: ^8.1.1
 
 
 dev_dependencies:
