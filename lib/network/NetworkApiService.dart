@@ -39,6 +39,7 @@ class NetworkApiService extends BaseApiService {
   }
 
   dynamic returnResponse(http.Response response) {
+    print(response.toString());
     switch (response.statusCode) {
       case 200:
         dynamic responseJson = jsonDecode(response.body);

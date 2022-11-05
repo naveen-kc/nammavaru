@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../controller/LoginController.dart';
 import '../utils/helpers.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
@@ -52,11 +53,11 @@ class _LoginState extends State<Login> {
           builder: (BuildContext context) {
             return AppDialog(
               header: "Enter Email",
-              description: "Please enter your email address",
+              description: "Please proper enter your email address",
             );
           });
 
-    }else if(mobile.isEmpty){
+    }else if(mobile.isEmpty ||mobile.length<10){
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -70,7 +71,31 @@ class _LoginState extends State<Login> {
     else{
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      Navigator.pushNamed(context, "/home");
+      setState(() {
+        loading = true;
+      });
+      var data = await  LoginController().login(emailController.text,mobileController.text);
+
+      if (data['status']==200) {
+        Navigator.pushNamed(context, "/verify",arguments: {"isRegister":false,"mobile":mobileController.text});
+        setState(() {
+          loading = false;
+        });
+      }else{
+        setState(() {
+          loading = false;
+        });
+
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AppDialog(
+                header: "Error",
+                description: data['message'],
+              );
+            });
+      }
 
     }
   }
