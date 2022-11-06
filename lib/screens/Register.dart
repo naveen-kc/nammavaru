@@ -29,7 +29,6 @@ class _RegisterState extends State<Register> {
   TextEditingController dobController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController VillageController = TextEditingController();
   TextEditingController confirmController = TextEditingController();
@@ -241,7 +240,7 @@ class _RegisterState extends State<Register> {
             );
           });
     }
-    else if(nameController.text.isEmpty||mobileController.text.isEmpty||dob.isEmpty||genderController.text.isEmpty||addressController.text.isEmpty||VillageController.text.isEmpty||passwordController.text.isEmpty||confirmController.text.isEmpty){
+    else if(nameController.text.isEmpty||mobileController.text.isEmpty||dob.isEmpty||addressController.text.isEmpty||VillageController.text.isEmpty||passwordController.text.isEmpty||confirmController.text.isEmpty){
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -280,10 +279,17 @@ class _RegisterState extends State<Register> {
       setState(() {
         loading = true;
       });
-      var data = await  LoginController().register(nameController.text,mobileController.text,dob,genderController.text,addressController.text,VillageController.text,passwordController.text,this.photo.path);
+      var data = await  LoginController().register(nameController.text,mobileController.text,dob,addressController.text,VillageController.text,passwordController.text,this.photo.path);
 
       log(data.toString());
       if (data['status']) {
+        localStorage.putName(name);
+        localStorage.putMobile(mobileController.text);
+        localStorage.putDob(dob);
+        localStorage.putAddress(addressController.text);
+        localStorage.putVillage(VillageController.text);
+
+
         Navigator.pop(context,true);
         Navigator.pushNamed(context, "/home");
         setState(() {
@@ -450,37 +456,7 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
 
-                Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: TextField(
-                    controller: genderController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey
-                          )
-                      ),
-                      labelText: 'Gender',
-                      hintText: 'Gender',
-                      hintStyle: TextStyle(
-                        fontFamily: 'HindRegular',
-                      ),
-                      labelStyle: TextStyle(
-                          color: Colors.black,
-                        fontFamily: 'HindRegular',
-                      ),focusedBorder:OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black,
-                      ),
-                    ),
-                    ),
-                    onChanged: (value){
-                      setState((){
 
-                        gender=genderController.text;
-                      });
-                    },
-                  ),
-                ),
 
                 Padding(
                   padding: EdgeInsets.all(15.0),

@@ -29,14 +29,13 @@ class LoginController{
 
 
 
-  Future<dynamic> register(String name,String mobile,String dob, String gender,String address,String village,String password,filepath) async {
+  Future<dynamic> register(String name,String mobile,String dob,String address,String village,String password,filepath) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var request = await http.MultipartRequest(
         'POST', Uri.parse(ApiConstants.baseUrl + ApiEndpoints.register));
     request.fields['name'] = name;
     request.fields['mobile'] = mobile;
-    request.fields['gender'] = gender;
     request.fields['dob'] = dob;
     request.fields['address'] = address;
     request.fields['village'] = village;
