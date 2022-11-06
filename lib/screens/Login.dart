@@ -17,10 +17,10 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool loading=false;
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController emailController=TextEditingController();
-  String email='';
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController mobileController=TextEditingController();
   String mobile='';
+  String password='';
   var ctime;
   bool isInternet=false;
 
@@ -46,25 +46,25 @@ class _LoginState extends State<Login> {
             );
           });
     }
-   else if(email.isEmpty){
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AppDialog(
-              header: "Enter Email",
-              description: "Please proper enter your email address",
-            );
-          });
-
-    }else if(mobile.isEmpty ||mobile.length<10){
+   else if(mobile.isEmpty){
       showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AppDialog(
               header: "Enter Mobile Number",
-              description: "Please enter your mobile number",
+              description: "Please proper enter your registered mobile number",
+            );    
+          });
+
+    }else if(password.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter Password",
+              description: "Please enter your password",
             );
           });
     }
@@ -74,10 +74,11 @@ class _LoginState extends State<Login> {
       setState(() {
         loading = true;
       });
-      var data = await  LoginController().login(emailController.text,mobileController.text);
+      var data = await  LoginController().login(mobileController.text,passwordController.text);
 
-      if (data['status']==200) {
-        Navigator.pushNamed(context, "/verify",arguments: {"isRegister":false,"mobile":mobileController.text});
+      if (data['status']) {
+        Navigator.pop(context,true);
+        Navigator.pushNamed(context, "/home");
         setState(() {
           loading = false;
         });
@@ -91,7 +92,7 @@ class _LoginState extends State<Login> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AppDialog(
-                header: "Error",
+                header: "Login fail",
                 description: data['message'],
               );
             });
@@ -129,7 +130,7 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    'We\'ll text you OTP to verify your credentials',
+                    'Login to get to know the updates of us',
                     style: TextStyle(
                         fontSize: 14.0,
                         fontFamily: 'HindRegular'
@@ -144,9 +145,10 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.all(15.0),
                   child: TextField(
-                    controller: emailController,
+                    controller: mobileController,
+                    keyboardType: TextInputType.phone,
                     onChanged: (value){
-                      email=emailController.text;
+                      mobile=mobileController.text;
                     },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -154,8 +156,8 @@ class _LoginState extends State<Login> {
                               color: Colors.grey
                           )
                       ),
-                      labelText: 'Email',
-                      hintText: 'Email',
+                      labelText: 'Mobile Number',
+                      hintText: 'Mobile Number',
                       hintStyle: TextStyle(
                           fontFamily: 'HindRegular'
                       ),
@@ -173,11 +175,11 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.all(15.0),
                   child: TextField(
-                    keyboardType: TextInputType.phone,
+
                     //maxLength: 10,
-                    controller: mobileController,
+                    controller: passwordController,
                     onChanged: (value){
-                      mobile=mobileController.text;
+                      password=passwordController.text;
                     },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -185,8 +187,8 @@ class _LoginState extends State<Login> {
                               color: Colors.grey
                           )
                       ),
-                      labelText: 'Mobile number',
-                      hintText: 'Mobile number',
+                      labelText: 'Password',
+                      hintText: 'Password',
                       hintStyle: TextStyle(
                           fontFamily: 'HindRegular'
                       ),

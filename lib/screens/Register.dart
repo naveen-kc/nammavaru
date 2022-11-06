@@ -9,9 +9,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:nammavaru/utils/helpers.dart';
+import 'package:nammavaru/widgets/loader.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../controller/LoginController.dart';
 import '../utils/LocalStorage.dart';
 import '../widgets/app_button.dart';
+import '../widgets/dialog_box.dart';
+import '../widgets/no_internet.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -23,11 +28,14 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   TextEditingController dobController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController mobileController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController VillageController = TextEditingController();
+  TextEditingController confirmController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
-  double percentage = 0.1;
+
   bool imageSelected= false;
   String imageName="";
   late File photo;
@@ -36,11 +44,10 @@ class _RegisterState extends State<Register> {
   String gender='';
   String address='';
   String Village='';
-  String pincode='';
-  String state='';
   bool loading=false;
   LocalStorage localStorage=LocalStorage();
   Helpers helpers=Helpers();
+  bool isInternet=false;
 
   @override
   void initState() {
@@ -86,7 +93,6 @@ class _RegisterState extends State<Register> {
     }
   }
 
-
   Future pickFromCamera()async{
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
@@ -118,9 +124,6 @@ class _RegisterState extends State<Register> {
       print('Failed to pick image: $e');
     }
   }
-
-
-
 
   Future selectFrom() async {
     showDialog(
@@ -221,11 +224,98 @@ class _RegisterState extends State<Register> {
   }
 
 
+
+
+  void registerUser() async{
+    isInternet = await Helpers().isInternet();
+    if(!isInternet){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return NoInternet(
+              header: "No Internet",
+              description:
+              "Please check your data connectivity or try again in some time.",
+              move: '/login',
+            );
+          });
+    }
+    else if(nameController.text.isEmpty||mobileController.text.isEmpty||dob.isEmpty||genderController.text.isEmpty||addressController.text.isEmpty||VillageController.text.isEmpty||passwordController.text.isEmpty||confirmController.text.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter all fields",
+              description: "Enter all the fields to register",
+            );
+          });
+
+    }else if(passwordController.text!=confirmController.text){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Password doesn\'t match",
+              description: "Your password should be matched to confirm password",
+            );
+          });
+    }
+    else if(imageName.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Select Profile image",
+              description: "Please select the image for your profile",
+            );
+          });
+    }
+    else{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      setState(() {
+        loading = true;
+      });
+      var data = await  LoginController().register(nameController.text,mobileController.text,dob,genderController.text,addressController.text,VillageController.text,passwordController.text,this.photo.path);
+
+      log(data.toString());
+      if (data['status']) {
+        Navigator.pop(context,true);
+        Navigator.pushNamed(context, "/home");
+        setState(() {
+          loading = false;
+        });
+      }else{
+        setState(() {
+          loading = false;
+        });
+
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AppDialog(
+                header: "Error",
+                description: data['message'],
+              );
+            });
+      }
+
+    }
+
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: SingleChildScrollView(
+          child:loading?Loader(): SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children:  [
@@ -284,7 +374,38 @@ class _RegisterState extends State<Register> {
                     ),
                     onChanged: (value){
                       setState((){
-                        percentage =  0.2;
+                        name=nameController.text;
+                      });
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: TextField(
+                    keyboardType: TextInputType.phone,
+                    controller: mobileController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          )
+                      ),
+                      labelText: 'Mobile Number',
+                      hintText: 'Mobile Number',
+                      hintStyle: TextStyle(
+                        fontFamily: 'HindRegular',
+                      ),
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'HindRegular',
+                      ),focusedBorder:OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.black,
+                      ),
+                    ),
+                    ),
+                    onChanged: (value){
+                      setState((){
+
                         name=nameController.text;
                       });
                     },
@@ -322,7 +443,6 @@ class _RegisterState extends State<Register> {
                     ),
                     onChanged: (value){
                       setState((){
-                        percentage =  0.3;
                         dob=dobController.text;
                       });
                     },
@@ -355,7 +475,7 @@ class _RegisterState extends State<Register> {
                     ),
                     onChanged: (value){
                       setState((){
-                        percentage =  0.4;
+
                         gender=genderController.text;
                       });
                     },
@@ -388,7 +508,7 @@ class _RegisterState extends State<Register> {
                     ),
                     onChanged: (value){
                       setState((){
-                        percentage =  0.5;
+
                         address=addressController.text;
                       });
                     },
@@ -420,8 +540,73 @@ class _RegisterState extends State<Register> {
                     ),
                     onChanged: (value){
                       setState((){
-                        percentage =  0.6;
+
                         Village=VillageController.text;
+                      });
+                    },
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: TextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          )
+                      ),
+                      labelText:'Set a password',
+                      hintText: 'Enter password',
+                      hintStyle: TextStyle(
+                        fontFamily: 'HindRegular',
+                      ),
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'HindRegular',
+                      ),focusedBorder:OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.black,
+                      ),
+                    ),
+                    ),
+                    onChanged: (value){
+                      setState((){
+
+                      });
+                    },
+                  ),
+                ),
+
+
+                Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: TextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: confirmController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          )
+                      ),
+                      labelText: 'Confirm Password',
+                      hintText: 'Confirm Password',
+                      hintStyle: TextStyle(
+                        fontFamily: 'HindRegular',
+                      ),
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'HindRegular',
+                      ),focusedBorder:OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.black,
+                      ),
+                    ),
+                    ),
+                    onChanged: (value){
+                      setState((){
+
                       });
                     },
                   ),
@@ -514,7 +699,7 @@ class _RegisterState extends State<Register> {
                         height: 50,
                         fontSize: 18,
                         onPressed: () {
-                          //storeBasic();
+                          registerUser();
                         },
                         borderRadius: BorderRadius.circular(25), fontFamily: 'HindMedium',
                       ),

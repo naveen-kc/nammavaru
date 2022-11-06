@@ -8,10 +8,8 @@ class ApiConstants {
 }
 
 class ApiEndpoints {
-  static String appVersion = '/appVersion?';
-  static String logout = '/logout1?';
-  static String accountSummary = '/trip_details?';
-  static String forgotPassword = '/forgot-password?';
+  static String logout = '/logout.php';
   static String login = '/login.php';
+  static String register='/register.php';
 
 }
