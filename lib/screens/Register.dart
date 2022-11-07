@@ -251,7 +251,19 @@ class _RegisterState extends State<Register> {
             );
           });
 
-    }else if(passwordController.text!=confirmController.text){
+    }else if(mobileController.text.length!=10){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter proper mobile number",
+              description: "Please enter your proper 10 digit mobile number",
+            );
+          });
+    }
+
+    else if(passwordController.text!=confirmController.text){
       showDialog(
           context: context,
           barrierDismissible: false,

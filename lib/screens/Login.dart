@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/utils/LocalStorage.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,7 @@ class _LoginState extends State<Login> {
   bool loading=false;
   TextEditingController passwordController = TextEditingController();
   TextEditingController mobileController=TextEditingController();
+  LocalStorage localStorage=LocalStorage();
   String mobile='';
   String password='';
   var ctime;
@@ -77,6 +79,13 @@ class _LoginState extends State<Login> {
       var data = await  LoginController().login(mobileController.text,passwordController.text);
 
       if (data['status']) {
+        localStorage.putName(data['name']);
+        localStorage.putMobile(data['mobile']);
+        localStorage.putDob(data['dob']);
+        localStorage.putAddress(data['address']);
+        localStorage.putVillage(data['village']);
+        localStorage.putProfile(data['image']);
+
         Navigator.pop(context,true);
         Navigator.pushNamed(context, "/home");
         setState(() {

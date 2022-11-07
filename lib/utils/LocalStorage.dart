@@ -36,6 +36,11 @@ class LocalStorage {
     prefs.setString("village", village);
   }
 
+  void putProfile(String image) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("image", image);
+  }
+
 
 
 

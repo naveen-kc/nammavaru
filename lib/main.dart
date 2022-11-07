@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/screens/AddUpdate.dart';
 import 'package:nammavaru/screens/DetailedGallery.dart';
 import 'package:nammavaru/screens/Home.dart';
 import 'package:nammavaru/screens/Login.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => Register(),
         '/privacy': (context) => Privacy(),
         '/detailedGallery': (context) => DetailedGallery(),
+        '/addUpdate': (context) => AddUpdate(),
 
       },
     );

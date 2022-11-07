@@ -363,11 +363,14 @@ class _HomeState extends State<Home> {
       ),
       backgroundColor: AppColors.soil,
       actions: [
-       if(pageIndex==0) Padding(
-          padding: const EdgeInsets.only(right: 20.0),
-          child: Icon(Icons.add_photo_alternate_rounded,
-              color: Colors.white),
-        ),
+       if(pageIndex==0)
+         IconButton(
+           onPressed: () {
+             Navigator.pushNamed(context, '/addUpdate');
+         },
+           icon: Icon( Icons.add_photo_alternate_rounded,
+         color: AppColors.white,),),
+
       ],
       flexibleSpace: Container(
         decoration: const BoxDecoration(

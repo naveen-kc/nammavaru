@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:nammavaru/controller/ProfileController.dart';
+import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
@@ -21,6 +23,10 @@ class Profile extends StatefulWidget {
 
 class _LoginState extends State<Profile> {
   TextEditingController dateinput = TextEditingController();
+  // TextEditingController nameController = TextEditingController();
+  // TextEditingController dobController = TextEditingController();
+  // TextEditingController villageController = TextEditingController();
+  // TextEditingController addressController = TextEditingController();
   List<dynamic> children = [
     {"name": "Navya K C"},
     {"name": "Chandru K"},
@@ -34,31 +40,63 @@ class _LoginState extends State<Profile> {
   LocalStorage localStorage=LocalStorage();
   String name='';
   String mobile='9482759828';
-  String email='naveenkc435@gmail.com';
   String profile='';
   String dob='';
+
   String address='';
-  String city='';
-  String gender='';
-  String state='';
-  String pincode='';
+  String village='';
   String parentId='';
-  TextEditingController uniqueController = TextEditingController();
 
 
   @override
   void initState() {
+    loading=true;
     dateinput.text = "";
+    getProfile();
 
     super.initState();
   }
 
+  void getProfile()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+
+    var data=await ProfileController().getProfile();
+    if(data['status']){
+      name=data['name'];
+      mobile=data['mobile'];
+      dob=data['dob'];
+      address=data['address'];
+      profile=data['image'];
+      village=data['village'];
+    }else{
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+    setState((){
+        loading=false;
+      });
+
+
+  }
+
+  void updateProfile()async{
+
+
+  }
 
 
   void selectDate() async {
     DateTime? pickedDate = await showDatePicker(
         context: context, initialDate: DateTime.now(),
-        firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+        firstDate: DateTime(1900), //DateTime.now() - not to allow to choose before today.
         lastDate: DateTime(2101),
         builder: (context, child) {
           return Theme(
@@ -257,14 +295,10 @@ class _LoginState extends State<Profile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      color: Colors.white,
-                      height: 300,
-                      width: MediaQuery.of(context).size.width,
-                      child: Stack(
+                     Stack(
                         children: [
                           Container(
-                            height: 115,
+                            height: 95,
                             decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                   begin: Alignment.centerLeft,
@@ -276,7 +310,7 @@ class _LoginState extends State<Profile> {
                           Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 child: Align(
                                   alignment: Alignment.topCenter,
                                   child: CircleAvatar(
@@ -285,32 +319,46 @@ class _LoginState extends State<Profile> {
                                     child: CircleAvatar(
                                       backgroundColor: Colors.black,
                                       radius: 55.0,
-                                      backgroundImage: AssetImage(
-                                        helpers.american,
+                                      backgroundImage: NetworkImage(
+                                        ApiConstants.baseUrl+'/'+profile,
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 20),
+                                padding: const EdgeInsets.only(top: 10),
                                 child: Text(
                                   name,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 22),
+                                      fontSize: 22,
+                                      fontFamily: 'HindMedium'),
                                 ),
                               ),
                               Padding(
                                 padding:
-                                const EdgeInsets.only(top: 2, bottom: 10),
+                                const EdgeInsets.only(top: 0, bottom: 10),
                                 child: Text(
-                                  email + ' | ' + mobile,
+                                   mobile,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 12),
+                                      fontSize: 14,
+                                      fontFamily: 'HindMedium'),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.only(top: 0, bottom: 10),
+                                child: Text(
+                                  village,
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      fontFamily: 'HindMedium'),
                                 ),
                               ),
                               ElevatedButton(
@@ -336,7 +384,7 @@ class _LoginState extends State<Profile> {
                           )
                         ],
                       ),
-                    ),
+
                     Container(
                       width: MediaQuery.of(context).size.width,
                       color: Colors.grey[100],
@@ -473,7 +521,7 @@ class _LoginState extends State<Profile> {
                                         ):CircleAvatar(
                                           backgroundColor: Colors.black,
                                           radius: 55.0,
-                                          backgroundImage: AssetImage(helpers.person),
+                                          backgroundImage: NetworkImage(ApiConstants.baseUrl+'/'+profile),
                                         ),
                                       ),
                                     ),
@@ -550,31 +598,7 @@ class _LoginState extends State<Profile> {
                                     ),
                                   ),
 
-                                  Padding(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey
-                                            )
-                                        ),
-                                        labelText: gender,
-                                        hintText: 'Gender',
-                                        labelStyle: TextStyle(
-                                            color: Colors.black
-                                        ),focusedBorder:OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.black,
-                                        ),
-                                      ),
-                                      ),
-                                      onChanged: (value){
-                                        setState((){
 
-                                        });
-                                      },
-                                    ),
-                                  ),
 
                                   Padding(
                                     padding: EdgeInsets.all(15.0),
@@ -612,8 +636,8 @@ class _LoginState extends State<Profile> {
                                                 color: Colors.grey
                                             )
                                         ),
-                                        labelText: city,
-                                        hintText: 'City',
+                                        labelText: village,
+                                        hintText: 'Village',
                                         labelStyle: TextStyle(
                                             color: Colors.black
                                         ),focusedBorder:OutlineInputBorder(
@@ -629,58 +653,7 @@ class _LoginState extends State<Profile> {
                                     ),
                                   ),
 
-                                  Padding(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey
-                                            )
-                                        ),
-                                        labelText: state,
-                                        hintText: 'State',
-                                        labelStyle: TextStyle(
-                                            color: Colors.black
-                                        ),focusedBorder:OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.black,
-                                        ),
-                                      ),
-                                      ),
-                                      onChanged: (value){
-                                        setState((){
 
-                                        });
-                                      },
-                                    ),
-                                  ),
-
-                                  Padding(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: TextField(
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey
-                                            )
-                                        ),
-                                        labelText: pincode,
-                                        hintText: 'Pincode',
-                                        labelStyle: TextStyle(
-                                            color: Colors.black
-                                        ),focusedBorder:OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.black,
-                                        ),
-                                      ),
-                                      ),
-                                      onChanged: (value){
-                                        setState((){
-
-                                        });
-                                      },
-                                    ),
-                                  ),
 
                                   Align(
                                     alignment: Alignment.center,
@@ -698,7 +671,7 @@ class _LoginState extends State<Profile> {
                                           height: 50,
                                           fontSize: 18,
                                           onPressed: () {
-                                            Navigator.pushNamed(context, "");
+                                            updateProfile();
                                           },
                                           borderRadius: BorderRadius.circular(25), fontFamily: 'HindBold',
                                         ),
