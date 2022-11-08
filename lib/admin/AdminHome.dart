@@ -41,6 +41,7 @@ class _AdminHomeState extends State<AdminHome> {
                   height: 50,
                   fontSize: 18,
                   onPressed: () {
+                    Navigator.pushNamed(context, '/addProgram');
 
                   },
                   borderRadius: BorderRadius.circular(10), fontFamily: 'HindBold',

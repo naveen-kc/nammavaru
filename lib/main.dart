@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/admin/AddProgram.dart';
 import 'package:nammavaru/admin/AdminHome.dart';
 import 'package:nammavaru/screens/AddUpdate.dart';
 import 'package:nammavaru/screens/DetailedGallery.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
 
         //Admin Screens
         '/adminHome': (context) => AdminHome(),
+        '/addProgram': (context) => AddProgram(),
 
       },
     );

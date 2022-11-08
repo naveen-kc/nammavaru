@@ -16,4 +16,9 @@ class ApiEndpoints {
   static String getUpdates='/getUpdates.php';
   static String addUpdate='/addUpdate.php';
 
+
+
+  //admin endpoints
+  static String addProgram='/addProgram.php';
+
 }
