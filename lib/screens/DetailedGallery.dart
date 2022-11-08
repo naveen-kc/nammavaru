@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/Helpers.dart';
 import 'package:nammavaru/widgets/image_viewer.dart';
+import 'package:nammavaru/widgets/loader.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../utils/constants.dart';
@@ -20,14 +22,13 @@ class _DetailedGalleryState extends State<DetailedGallery> {
   late YoutubePlayerController _controller;
  // String videoId="CXNtVQ_mJfM";
   int vIndex=0;
-  List<dynamic> videoIds=['0TfGADHyf3Y','I0japj6Irfk','CXNtVQ_mJfM','Nnj2NS8r1zo'];
-   List<dynamic> photos = [
-    'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-    'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
-     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-      'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-  ];
+  List<dynamic> videoIds=[];
+   List<dynamic> photos = [];
+
+   List<dynamic> program=[];
+   String name='';
+   String description='';
+   bool loading=false;
 
    Helpers helpers=Helpers();
 
@@ -35,14 +36,26 @@ class _DetailedGalleryState extends State<DetailedGallery> {
   @override
   void initState() {
 
+    setState((){
+      loading=true;
+    });
+
     //final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-    _controller = YoutubePlayerController(
-        initialVideoId:videoIds[vIndex],
-        flags: YoutubePlayerFlags(
+    Future.delayed(Duration(seconds: 1), () {
+      _controller = YoutubePlayerController(
+          initialVideoId:videoIds[vIndex],
+          flags: YoutubePlayerFlags(
             autoPlay: false,
-          hideThumbnail: true,
-          enableCaption: false,
-        ));
+            hideThumbnail: true,
+            enableCaption: false,
+          ));
+
+      setState((){
+        loading=false;
+      });
+    });
+
+
 
     super.initState();
   }
@@ -63,6 +76,22 @@ class _DetailedGalleryState extends State<DetailedGallery> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    setState(() {
+      program = args['program'];
+    });
+    setState((){
+      videoIds = program[4].split(",");
+      //videoIds=program[4].cast<String>().toList();
+      photos=program[5].split(",");
+      name=program[1].toString();
+      description=program[2].toString();
+
+    });
+
+    log("PROGRAANMNNNN :"+program.toString());
+
+
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
@@ -72,11 +101,11 @@ class _DetailedGalleryState extends State<DetailedGallery> {
             ),
             elevation: 0,
             title: Text(
-              "Vidhya nidhi",
+              name,
               style: TextStyle(fontFamily: 'HindBold',
                   color: AppColors.black),
             )),
-        body: YoutubePlayerBuilder(
+        body: loading?Loader(): YoutubePlayerBuilder(
             player: YoutubePlayer(
               controller: _controller,
               showVideoProgressIndicator: true,
@@ -97,8 +126,8 @@ class _DetailedGalleryState extends State<DetailedGallery> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: const Text(
-                          'This is the video of our cultural program of Vidhyanidhi program.',
+                      child: Text(
+                          description,
                         style: TextStyle(
                           fontFamily: 'HindRegular',
                           fontSize: 16,
@@ -188,7 +217,7 @@ class _DetailedGalleryState extends State<DetailedGallery> {
                                                 barrierDismissible: false,
                                                 builder: (BuildContext context) {
                                                   return ImageViewer(
-                                                   image: photos[index],
+                                                   image: ApiConstants.baseUrl+'/photos/'+photos[index],
                                                   );
                                                 });
                                           },
@@ -204,7 +233,7 @@ class _DetailedGalleryState extends State<DetailedGallery> {
                                                     spreadRadius: 0.5),
                                               ],
                                             ),
-                                            child: Image.network(photos[index],
+                                            child: Image.network(ApiConstants.baseUrl+'/photos/'+photos[index],
                                             fit: BoxFit.contain,),
                                           ),
                                         ),

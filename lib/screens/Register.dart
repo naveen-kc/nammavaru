@@ -647,8 +647,9 @@ class _RegisterState extends State<Register> {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Text('Browse to upload',
                                 style: TextStyle(
-                                    color: Color(0xFF455D2B) ,
-                                    fontSize: 15
+                                    color: AppColors.soil ,
+                                    fontSize: 15,
+                                  fontFamily: 'HindRegular'
 
                                 ),),
                             )

@@ -2,7 +2,7 @@ class ApiConstants {
 
 
   //service
-  static String baseUrl = "http://sringerikumbararu.website/nammavaru";
+  static String baseUrl = "https://sringerikumbararu.website/nammavaru";
 
 
 }
@@ -15,6 +15,7 @@ class ApiEndpoints {
   static String updateProfile='/updateProfile.php';
   static String getUpdates='/getUpdates.php';
   static String addUpdate='/addUpdate.php';
+  static String getPrograms='/getPrograms.php';
 
 
 

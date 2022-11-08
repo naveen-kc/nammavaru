@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../controller/HomeController.dart';
 import '../utils/constants.dart';
 import '../widgets/app_button.dart';
+import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
 
 
@@ -28,15 +29,65 @@ class _AddUpdateState extends State<AddUpdate> {
 
 
   void addUpdate()async{
-    var data=await HomeController().updateNow(descriptionController.text,this.photo.path);
-    if(data['status']){
-
+    if(descriptionController.text.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Write caption",
+              description: 'Please write a caption or description.',
+            );
+          });
+    }
+    else if(imageName.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Select Image",
+              description: 'Please select one image',
+            );
+          });
     }else{
-
+      setState((){
+        loading=true;
+      });
+      var data=await HomeController().updateNow(descriptionController.text,this.photo.path);
+      if(data['status']){
+        Navigator.pop(context,true);
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AppDialog(
+                header: "Update added",
+                description: data['message'],
+              );
+            });
+        setState((){
+          loading=false;
+        });
+      }else{
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AppDialog(
+                header: "Error",
+                description: data['message'],
+              );
+            });
+        setState((){
+          loading=false;
+        });
+      }
     }
 
+
   }
-//for checking git
+
   Future pickFromCamera()async{
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
@@ -245,8 +296,9 @@ class _AddUpdateState extends State<AddUpdate> {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Text('Browse to select',
                                 style: TextStyle(
-                                    color: Color(0xFF455D2B) ,
-                                    fontSize: 15
+                                    color: AppColors.soil ,
+                                    fontSize: 15,
+                                    fontFamily: 'HindRegular'
 
                                 ),),
                             )

@@ -58,4 +58,19 @@ class HomeController{
   }
 
 
+  Future<dynamic> getPrograms() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getPrograms, {
+      //"mobile":prefs.getString("mobile")!,
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
+
 }

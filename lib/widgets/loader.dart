@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/utils/constants.dart';
 
 class Loader extends StatelessWidget {
   double? height;
@@ -22,7 +23,7 @@ class Loader extends StatelessWidget {
                 //Image.asset('assets/images/loader.gif',fit: BoxFit.fill,) // use you custom loader or default loader
                 CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation(
-                        Color(0xFF455D2B)),
+                        AppColors.soil),
                     strokeWidth: 5.0))));
   }
 }

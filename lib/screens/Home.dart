@@ -5,6 +5,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nammavaru/controller/HomeController.dart';
+import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -414,19 +416,48 @@ class _Page1State extends State<Page1> {
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
 
-  List<dynamic> updates=[
-    {"name":"Navee K C","village":"Kalkatte","image":"https://www.shutterstock.com/image-photo/pair-young-people-test-drive-600w-2034171992.jpg","time":"10:30PM 22/10/2022","description":"Happy to share that we bought a new electric scooter"},
-    {"name":"Gowtham Kulal","village":"Kalkatte","image":"https://www.shutterstock.com/image-photo/tasikmalaya-west-java-indonesia-november-600w-2081072653.jpg","time":"02:10PM 22/09/2022","description":"Started cultivation at our grassland as the rainy season starts"},
-    {"name":"Chandrashekar","village":"Menase","image":"https://img.traveltriangle.com/blog/wp-content/uploads/2017/05/Assamese-women-and-men-dancing-during-Bihu-festival-ss22052017.jpg","time":"10:05PM 22/11/2022","description":"I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world , I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world , I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world , I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world. I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world ,I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world, I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world"},
-    {"name":"Uday","village":"Menase","image":"https://lostwithpurpose.com/wp-content/uploads/2016/11/DSC_1625.jpg","time":"11:30PM 08/10/2022","description":"Celebrated deepavali in our village with all our community people makes so happy"}
-  ];
+  List<dynamic> updates=[];
 
   bool loading =false;
   Helpers helpers=Helpers();
 
   @override
   void initState() {
+    getUpdates();
     super.initState();
+
+  }
+
+  void getUpdates()async{
+    setState((){
+      loading=true;
+    });
+    var data=await HomeController().getUpdates();
+    if(data['status']){
+      setState((){
+        updates=data['updates'];
+      });
+      setState((){
+        loading=false;
+      });
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+    setState((){
+      loading=false;
+    });
 
   }
 
@@ -705,7 +736,7 @@ class _Page1State extends State<Page1> {
                                             15, 5, 15, 0),
                                         child: Padding(
                                         padding: const EdgeInsets.all(20.0),
-                                        child: Image.network(updates[index]["image"],
+                                        child: Image.network(ApiConstants.baseUrl+'/'+updates[index]["image"],
                                           fit: BoxFit.fill,
 
                                         )
@@ -744,7 +775,46 @@ class _Page5State extends State<Page5> {
 
   bool loading =false;
   Helpers helpers=Helpers();
-  List<dynamic> gallery=[{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Varshikotsava","date":"22/10/2022"},{"name":"Saraswathi pooja","date":"22/01/2022"},{"name":"Farewell","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},{"name":"Vidya Nidhi","date":"22/01/2022"},];
+  List<dynamic> programs=[];
+
+  @override
+  void initState(){
+    super.initState();
+
+    getPrograms();
+  }
+
+  void getPrograms()async{
+    setState((){
+      loading=true;
+    });
+    var data=await HomeController().getPrograms();
+    if(data['status']){
+      setState((){
+        programs=data['data'];
+      });
+      setState((){
+        loading=false;
+      });
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+    setState((){
+      loading=false;
+    });
+  }
 
 
 
@@ -763,7 +833,7 @@ class _Page5State extends State<Page5> {
               child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  itemCount: gallery.length,
+                  itemCount: programs.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -818,8 +888,8 @@ class _Page5State extends State<Page5> {
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  gallery[index]
-                                                  ['name'],
+                                                  programs[index]
+                                                  [1],
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color: Colors.black,
@@ -829,8 +899,8 @@ class _Page5State extends State<Page5> {
 
 
                                                 Text(
-                                                  "On "+gallery[index]
-                                                  ['date'],
+                                                  "On "+programs[index]
+                                                  [3],
                                                   style: TextStyle(
                                                       fontSize: 12,
                                                       color: AppColors.grey,
@@ -842,7 +912,8 @@ class _Page5State extends State<Page5> {
                                             trailing: IconButton(
                                                 icon:  Icon(Icons.arrow_forward_rounded),
                                                 onPressed: () {
-                                                  Navigator.pushNamed(context, '/detailedGallery');
+                                                  Navigator.pushNamed(context, '/detailedGallery',
+                                                      arguments: {'program':programs[index]});
                                                 },
                                               ),
 
@@ -1079,10 +1150,10 @@ class _Page2State extends State<Page2> {
                                         width: MediaQuery.of(context).size.width*0.3,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(10),
-                                          color: Colors.white,
+                                          color: AppColors.white,
                                           boxShadow: [
                                             BoxShadow(
-                                                color:selectedAmt==index?AppColors.black: AppColors.lightGrey2,
+                                                color:selectedAmt==index?AppColors.black: AppColors.divider_line,
                                                 spreadRadius:selectedAmt==index?2: 1),
                                           ],
                                         ),
