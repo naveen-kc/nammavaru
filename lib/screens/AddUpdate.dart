@@ -36,7 +36,7 @@ class _AddUpdateState extends State<AddUpdate> {
     }
 
   }
-
+//for checking git
   Future pickFromCamera()async{
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
