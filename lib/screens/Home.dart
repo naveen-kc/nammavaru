@@ -69,6 +69,16 @@ class _HomeState extends State<Home> {
     }
   }
 
+
+  void checkAdmin()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+
+    if(prefs.getString("mobile")=='8660305451'){
+      Navigator.pop(context,true);
+      Navigator.pushNamed(context, '/adminHome');
+    }
+  }
+
   Future<bool> _onWillPop() async {
     DateTime now = DateTime.now();
     if (ctime == null || now.difference(ctime) > Duration(seconds: 2)) {
@@ -98,31 +108,36 @@ class _HomeState extends State<Home> {
                 decoration: BoxDecoration(
                   color: AppColors.soil,
                 ),
-                child: Container(child: Row(
-                  children: [
-                    SizedBox(
-                      width:60,
-                      height: 60,
-                      child: CircleAvatar(child: Icon(
-                        Icons.person,
-                        color: AppColors.black,
-                        size: 50,
+                child: GestureDetector(
+                  onTap: (){
+                    checkAdmin();
+                  },
+                  child: Container(child: Row(
+                    children: [
+                      SizedBox(
+                        width:60,
+                        height: 60,
+                        child: CircleAvatar(child: Icon(
+                          Icons.person,
+                          color: AppColors.black,
+                          size: 50,
+                        ),
+                        backgroundColor: AppColors.white,),
                       ),
-                      backgroundColor: AppColors.white,),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: SizedBox(
-                        width: 180,
-                        child: Text('Naveen K C',
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontFamily: 'HindBold',
-                        ),),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: SizedBox(
+                          width: 180,
+                          child: Text('Naveen K C',
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontFamily: 'HindBold',
+                          ),),
+                        ),
                       ),
-                    ),
-                  ],
-                )),
+                    ],
+                  )),
+                ),
               ),
               ListTile(
                 leading: Icon(
@@ -151,6 +166,7 @@ class _HomeState extends State<Home> {
                 title: const Text('Our Vision'),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, '/vision');
                 },
               ),
               ListTile(

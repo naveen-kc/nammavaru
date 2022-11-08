@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/admin/AdminHome.dart';
 import 'package:nammavaru/screens/AddUpdate.dart';
 import 'package:nammavaru/screens/DetailedGallery.dart';
 import 'package:nammavaru/screens/Home.dart';
@@ -7,6 +8,7 @@ import 'package:nammavaru/screens/Privacy.dart';
 import 'package:nammavaru/screens/Profile.dart';
 import 'package:nammavaru/screens/Register.dart';
 import 'package:nammavaru/screens/Splash.dart';
+import 'package:nammavaru/screens/Vision.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,10 +27,14 @@ class MyApp extends StatelessWidget {
         '/login': (context) => Login(),
         '/home': (context) => Home(),
         '/profile': (context) => Profile(),
+        '/vision': (context) => Vision(),
         '/register': (context) => Register(),
         '/privacy': (context) => Privacy(),
         '/detailedGallery': (context) => DetailedGallery(),
         '/addUpdate': (context) => AddUpdate(),
+
+        //Admin Screens
+        '/adminHome': (context) => AdminHome(),
 
       },
     );
