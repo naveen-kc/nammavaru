@@ -154,6 +154,17 @@ class _HomeState extends State<Home> {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.post_add,
+                ),
+                title: const Text('My Updates',
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/updates');
+                },
+              ),
+              ListTile(
+                leading: Icon(
                   Icons.notification_important_outlined,
                 ),
                 title: const Text('Notification'),

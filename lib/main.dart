@@ -9,6 +9,7 @@ import 'package:nammavaru/screens/Privacy.dart';
 import 'package:nammavaru/screens/Profile.dart';
 import 'package:nammavaru/screens/Register.dart';
 import 'package:nammavaru/screens/Splash.dart';
+import 'package:nammavaru/screens/Updates.dart';
 import 'package:nammavaru/screens/Vision.dart';
 
 void main() {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/privacy': (context) => Privacy(),
         '/detailedGallery': (context) => DetailedGallery(),
         '/addUpdate': (context) => AddUpdate(),
+        '/updates': (context) => Updates(),
 
         //Admin Screens
         '/adminHome': (context) => AdminHome(),

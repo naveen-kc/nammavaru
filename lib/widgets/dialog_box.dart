@@ -10,6 +10,7 @@ class AppDialog extends StatefulWidget {
   Map? args;
   String? popUntil;
   Color? backgroundColor;
+  Color? buttonColor;
   Color? textColor;
 
 
@@ -21,6 +22,7 @@ class AppDialog extends StatefulWidget {
         this.args,
         this.popUntil,
         this.backgroundColor,
+        this.buttonColor,
         this.textColor
       })
       : super(key: key);
@@ -82,7 +84,7 @@ class _AppDialogState extends State<AppDialog> {
                 elevation: 0.0,
                 borderRadius: BorderRadius.circular(10),
                 textColor: AppColors.white,
-                backgroundColor: AppColors.soil,
+                backgroundColor:widget.buttonColor==null? AppColors.soil:widget.buttonColor,
                 text: 'Okay',
                 width: MediaQuery.of(context).size.width,
                 height: 20,

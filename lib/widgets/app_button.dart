@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/utils/constants.dart';
 
 class Button extends StatelessWidget {
   final Color textColor;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final String text, fontFamily;
   double width, height, elevation;
   final VoidCallback onPressed;
@@ -12,7 +13,7 @@ class Button extends StatelessWidget {
   Button(
       {Key? key,
         required this.textColor,
-        required this.backgroundColor,
+        this.backgroundColor,
         required this.text,
         required this.width,
         required this.height,
@@ -31,7 +32,7 @@ class Button extends StatelessWidget {
         onTap: onPressed,
         child: Material(
           elevation: elevation,
-          color: backgroundColor,
+          color: backgroundColor==null?AppColors.black:backgroundColor,
           borderRadius: borderRadius,
           child: MaterialButton(
             onPressed: onPressed,

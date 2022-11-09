@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nammavaru/controller/UpdateController.dart';
 
 import '../controller/HomeController.dart';
 import '../utils/constants.dart';
@@ -54,7 +55,7 @@ class _AddUpdateState extends State<AddUpdate> {
       setState((){
         loading=true;
       });
-      var data=await HomeController().updateNow(descriptionController.text,this.photo.path);
+      var data=await UpdateController().updateNow(descriptionController.text,this.photo.path);
       if(data['status']){
         Navigator.pop(context,true);
         showDialog(
