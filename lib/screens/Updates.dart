@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:nammavaru/controller/UpdateController.dart';
+import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/Helpers.dart';
+import 'package:nammavaru/widgets/alert_box.dart';
 
 import '../utils/constants.dart';
 import '../widgets/dialog_box.dart';
@@ -30,6 +34,7 @@ class _UpdatesState extends State<Updates> {
       loading=true;
     });
     var data=await UpdateController().getIndividualUpdates();
+    log("data :"+data.toString());
     if(data['status']){
       setState((){
         individualUpdates=data['updates'];
@@ -56,10 +61,64 @@ class _UpdatesState extends State<Updates> {
       loading=false;
     });
   }
+
+
+  void deleteUpdate(String time,String image)async{
+    setState((){
+      loading=true;
+    });
+
+    var data=await UpdateController().deleteUpdate(time,image);
+    log("data :"+data.toString());
+    if(data['status']){
+      Navigator.pop(context,true);
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Success",
+              description: data['message'],
+            );
+          });
+      setState((){
+        loading=false;
+      });
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+    setState((){
+      loading=false;
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
-    return loading
+    return Scaffold(
+      appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: AppColors.soil,
+          iconTheme: IconThemeData(
+            color: AppColors.black,
+          ),
+          elevation: 0,
+          title: Text(
+            "My Updates",
+            style: TextStyle(fontFamily: 'HindBold', color: AppColors.black),
+          )),
+        body:loading
         ? Loader()
         : SafeArea(
       child: Container(
@@ -89,70 +148,132 @@ class _UpdatesState extends State<Updates> {
                                 ],
                               ),
                               margin: EdgeInsets.zero,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-                                    child: GestureDetector(
-                                      onTap: () {},
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          color:AppColors.divider_line,
-                                        ),
-                                        height: 80,
-                                        child: ListTile(
-                                          leading: Padding(
-                                            padding:
-                                            const EdgeInsets.only(top: 0),
-                                            child: SizedBox(
-                                              height: 50,
-                                              width: 50,
-                                                child:Image.network('src')
-                                            ),
-                                          ),
-                                          title:  Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                individualUpdates[index]
-                                                [1],
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.black,
-                                                    fontFamily: 'HindBold'
-                                                ),
-                                              ),
-
-
-                                              Text(
-                                                "On "+individualUpdates[index]
-                                                [3],
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: AppColors.grey,
-                                                    fontFamily: 'HindRegular'
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          trailing: IconButton(
-                                            icon:  Icon(Icons.arrow_forward_rounded),
-                                            onPressed: () {
-                                              Navigator.pushNamed(context, '/detailedGallery',
-                                                  arguments: {'program':individualUpdates[index]});
-                                            },
-                                          ),
-
-                                        ),
-                                      ),
+                              child: Row(
+                                children:[
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                child: SizedBox(
+                                      height: 110,
+                                      width: 150,
+                                        child:Image.network(ApiConstants.baseUrl+'/'+individualUpdates[index]['image'])
                                     ),
-                                  ),
-
-                                ],
                               ),
+                                       Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height:80,
+                                                  width: 140,
+                                                  child: Text(
+                                                    individualUpdates[index]["description"],
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black,
+                                                        fontFamily: 'HindBold'
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  individualUpdates[index]["time"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: AppColors.grey,
+                                                      fontFamily: 'HindRegular'
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                           Spacer(),
+                                           IconButton(
+                                              icon:  Icon(Icons.delete_outline),
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    barrierDismissible: false,
+                                                    builder: (BuildContext context) {
+                                                      return AlertBox(
+                                                        header: "Delete update",
+                                                        description: "Do you really want to permanently delete this update?",
+                                                        okay: () {
+                                                          deleteUpdate(individualUpdates[index]['time'],individualUpdates[index]['image']);
+                                                        },
+                                                      );
+                                                    });
+                                              },
+                                            ),
+
+                              ]
+                              ),
+
+
+
+
+
+                              // child: Column(
+                              //   children: [
+                              //     Padding(
+                              //       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                              //       child: GestureDetector(
+                              //         onTap: () {},
+                              //         child: Container(
+                              //           decoration: BoxDecoration(
+                              //             borderRadius:
+                              //             BorderRadius.circular(10),
+                              //             color:AppColors.divider_line,
+                              //           ),
+                              //           height: 100,
+                              //           child: ListTile(
+                              //             leading: Padding(
+                              //               padding:
+                              //               const EdgeInsets.only(top: 10),
+                              //               child: SizedBox(
+                              //                 height: 80,
+                              //                 width: 100,
+                              //                   child:Image.network(ApiConstants.baseUrl+'/'+individualUpdates[index]['image'])
+                              //               ),
+                              //             ),
+                              //             title:  Column(
+                              //               mainAxisAlignment: MainAxisAlignment.center,
+                              //               crossAxisAlignment: CrossAxisAlignment.start,
+                              //               children: [
+                              //                 SizedBox(
+                              //                   height:50,
+                              //                   child: Text(
+                              //                     individualUpdates[index]["description"],
+                              //                     style: TextStyle(
+                              //                         fontSize: 16,
+                              //                         color: Colors.black,
+                              //                         fontFamily: 'HindBold'
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //
+                              //
+                              //                 Text(
+                              //                   individualUpdates[index]["time"],
+                              //                   style: TextStyle(
+                              //                       fontSize: 12,
+                              //                       color: AppColors.grey,
+                              //                       fontFamily: 'HindRegular'
+                              //                   ),
+                              //                 ),
+                              //               ],
+                              //             ),
+                              //             trailing: IconButton(
+                              //               icon:  Icon(Icons.delete_outline),
+                              //               onPressed: () {
+                              //
+                              //               },
+                              //             ),
+                              //
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //
+                              //   ],
+                              // ),
 
                             ),
                           ),
@@ -166,6 +287,6 @@ class _UpdatesState extends State<Updates> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

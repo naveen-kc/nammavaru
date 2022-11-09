@@ -58,5 +58,21 @@ class UpdateController{
     }
   }
 
+  Future<dynamic> deleteUpdate(String time,String image) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.deleteUpdate, {
+      "mobile":prefs.getString("mobile")!,
+      "time":time,
+      "image":image
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
 
 }

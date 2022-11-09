@@ -962,7 +962,7 @@ class Page2 extends StatefulWidget {
 }
 class _Page2State extends State<Page2> {
   Helpers helpers=Helpers();
-  List<dynamic> amountList=[{"amt":"50"},{"amt":"100"},{"amt":"250"},{"amt":"500"},{"amt":"1000"},{"amt":"2000"},];
+  List<dynamic> amountList=[{"amt":"50"},{"amt":"100"},{"amt":"250"},{"amt":"500"},{"amt":"1000"},{"amt":"2000"}];
   TextEditingController amountController = TextEditingController();
   TextEditingController reasonController = TextEditingController();
   String amount='';
@@ -1131,19 +1131,19 @@ class _Page2State extends State<Page2> {
               Column(
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height*0.4,
+                    height: MediaQuery.of(context).size.height*0.3,
                       padding: EdgeInsets.all(20.0),
                       child: Scrollbar(
                         child: GridView.builder(
                           itemCount: amountList.length,
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 2.0,
-                              mainAxisSpacing: 2.0
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 20.0,
+                              mainAxisSpacing: 5.0
                           ),
                           itemBuilder: (BuildContext context, int index){
                             return Padding(
-                              padding: const EdgeInsets.only(top: 20),
+                              padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
                               child: Column(
                                 children: [
                                   GestureDetector(
@@ -1157,7 +1157,7 @@ class _Page2State extends State<Page2> {
 
                                 },
                                     child: Container(
-                                      height:110,
+                                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         width: MediaQuery.of(context).size.width*0.3,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(10),
@@ -1170,18 +1170,18 @@ class _Page2State extends State<Page2> {
                                         ),
                                         child: Column(
                                           children: [
-                                            SizedBox(height: 20,),
-                                            SizedBox(
-                                              height:30,
-                                                width:30,
-                                                child: Image.asset(helpers.rupee)),
                                             SizedBox(height: 5,),
+                                            SizedBox(
+                                              height:20,
+                                                width:20,
+                                                child: Image.asset(helpers.rupee)),
+
                                             Text(
                                                 amountList[index]['amt'],
                                               style: TextStyle(
                                                 color: AppColors.black,
                                                 fontFamily: 'HindBold',
-                                                fontSize: 25
+                                                fontSize: 20
                                               ),
                                             ),
                                           ],

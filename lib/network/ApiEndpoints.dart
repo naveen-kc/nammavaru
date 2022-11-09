@@ -17,6 +17,7 @@ class ApiEndpoints {
   static String addUpdate='/addUpdate.php';
   static String getPrograms='/getPrograms.php';
   static String getIndividualUpdate='/getIndividualUpdate.php';
+  static String deleteUpdate='/deleteUpdate.php';
 
 
 
