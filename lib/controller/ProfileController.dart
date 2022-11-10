@@ -58,7 +58,7 @@ class ProfileController{
         'POST', Uri.parse(ApiConstants.baseUrl + ApiEndpoints.changeProfile));
 
     request.fields['mobile'] = prefs.getString('mobile')!;
-    request.fields['old_image'] = prefs.getString('image')!.substring(1);
+    request.fields['old_image'] = prefs.getString('image')!;
 
     log("request :"+request.toString()+request.fields.toString());
 

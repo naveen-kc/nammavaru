@@ -261,6 +261,16 @@ class _RegisterState extends State<Register> {
               description: "Please enter your proper 10 digit mobile number",
             );
           });
+    }else if(passwordController.text.length<6){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Password Length",
+              description: "Password should contain at least 6 characters",
+            );
+          });
     }
 
     else if(passwordController.text!=confirmController.text){

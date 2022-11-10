@@ -14,6 +14,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
+import '../widgets/alert_box.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
@@ -77,6 +78,15 @@ class _HomeState extends State<Home> {
   }
 
 
+  void logout()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    prefs.clear();
+
+    Navigator.popUntil(context, (route) => route.settings.name=='/login');
+    Navigator.pushNamed(context, '/login');
+
+  }
+
   void checkAdmin()async{
     SharedPreferences prefs=await SharedPreferences.getInstance();
 
@@ -126,7 +136,7 @@ class _HomeState extends State<Home> {
                         height: 60,
                         child: CircleAvatar(backgroundImage:
                         NetworkImage(
-                         ApiConstants.baseUrl+profile
+                         ApiConstants.baseUrl+'/'+profile
                         ),
                         backgroundColor: AppColors.white,),
                       ),
@@ -202,7 +212,20 @@ class _HomeState extends State<Home> {
                 ),
                 title: const Text('Logout'),
                 onTap: () {
-                  Navigator.pop(context);
+
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AlertBox(
+                          header: "Logout",
+                          description: "Do you really want to logout?",
+                          okay: () {
+                           logout();
+                          },
+                        );
+                      });
+
                 },
               ),
 
