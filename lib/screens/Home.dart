@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as dev;
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -34,6 +34,8 @@ class _HomeState extends State<Home> {
   LocalStorage localStorage = LocalStorage();
   bool isInternet = false;
   Helpers helpers = Helpers();
+  String profile='';
+
 
   final pages = [
     const Page1(),
@@ -51,10 +53,13 @@ class _HomeState extends State<Home> {
   }
 
   void checkConnection() async {
+
     isInternet = await Helpers().isInternet();
 
     if (isInternet) {
-      //Need to call first method here
+      SharedPreferences prefs= await SharedPreferences.getInstance();
+      profile=prefs.getString('image')!;
+      dev.log('prrororororo '+profile);
 
     } else {
       showDialog(
@@ -119,10 +124,9 @@ class _HomeState extends State<Home> {
                       SizedBox(
                         width:60,
                         height: 60,
-                        child: CircleAvatar(child: Icon(
-                          Icons.person,
-                          color: AppColors.black,
-                          size: 50,
+                        child: CircleAvatar(backgroundImage:
+                        NetworkImage(
+                         ApiConstants.baseUrl+profile
                         ),
                         backgroundColor: AppColors.white,),
                       ),
@@ -1293,18 +1297,58 @@ class Page3 extends StatefulWidget {
 }
 class _Page3State extends State<Page3> {
 
-  List<dynamic> achievers=[
-    {"name":"Sarvajna","village":"Karnataka","image":"https://www.shutterstock.com/image-photo/pair-young-people-test-drive-600w-2034171992.jpg","time":"10:30PM 22/10/2022","description":"Sarvajña was a Kannada poet, pragmatist and philosopher of the 16th century. The word Sarvajna in Sanskrit literally means the all knowing. His father was Kumbara Malla and his mother was Mallaladevi. His birth anniversary is celebrated on February 20 every year. He belongs to the cast of Kumbara.Sarvajna was a Kannada poet, pragmatist and philosopher. He is famous for his pithy three-lined poems which are called tripadis, with three padas[disambiguation needed], three-liners, a form of Vachanas. He is also referred as Sarvagna in modern translation."},
-    {"name":"Gowtham Kulal","village":"Kalkatte","image":"https://www.shutterstock.com/image-photo/tasikmalaya-west-java-indonesia-november-600w-2081072653.jpg","time":"02:10PM 22/09/2022","description":"Madhvacharya also known as Purna Prajna and Ananda Tirtha, was the chief proponent of Tattvavada philosophy of reality, popularly known as the Dvaita (dualism) school of Hindu philosophy. It is one of the three most influential Vedanta philosophies. Madhvacarya was one of the important philosophers during the Bhakti movement. He was a pioneer in many ways, going against standard conventions and norms. According to tradition, Madhvacarya is believed to be the third incarnation of Vayu (Mukhyaprana) and first two being Hanuman and Bhima."},
-    {"name":"Chandrashekar","village":"Menase","image":"https://img.traveltriangle.com/blog/wp-content/uploads/2017/05/Assamese-women-and-men-dancing-during-Bihu-festival-ss22052017.jpg","time":"10:05PM 22/11/2022","description":"Madhvacharya also known as Purna Prajna and Ananda Tirtha, was the chief proponent of Tattvavada philosophy of reality, popularly known as the Dvaita (dualism) school of Hindu philosophy. second prize and would like to improve and show case our culture to the world, I like to inform that we participated in state dance competition and got second prize and would like to improve and show case our culture to the world"},
-    {"name":"Uday","village":"Menase","image":"https://lostwithpurpose.com/wp-content/uploads/2016/11/DSC_1625.jpg","time":"11:30PM 08/10/2022","description":"Celebrated deepavali in our village with all our community people makes so ,Madhvacharya also known as Purna Prajna and Ananda Tirtha, was the chief proponent of Tattvavada philosophy of reality, popularly known as the Dvaita (dualism) school of Hindu philosophy."}
-  ];
+  List<dynamic> achievers=[];
   Helpers helpers=Helpers();
+  bool loading=false;
+
+
+
+
+  @override
+  void initState() {
+    getUpdates();
+    super.initState();
+
+  }
+
+  void getUpdates()async{
+    setState((){
+      loading=true;
+    });
+    var data=await HomeController().getAchievers();
+    if(data['status']){
+      setState((){
+        achievers=data['achievers'];
+      });
+      setState((){
+        loading=false;
+      });
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+    setState((){
+      loading=false;
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child:
+      body:loading?Loader(): SafeArea(child:
       Container(
         color: AppColors.grey,
         child:  Column(
@@ -1359,8 +1403,8 @@ class _Page3State extends State<Page3> {
                                                     child: CircleAvatar(
                                                       backgroundColor: Colors.black,
                                                       radius: 55.0,
-                                                      backgroundImage: AssetImage(
-                                                        helpers.sarvajna,
+                                                      backgroundImage: NetworkImage(
+                                                        ApiConstants.baseUrl+'/'+achievers[index]["image"],
                                                       ),
                                                     ),
                                                   ),
@@ -1402,7 +1446,7 @@ class _Page3State extends State<Page3> {
                                           15, 5, 15, 15),
                                       child: Padding(
                                           padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                          child: Text(achievers[index]["description"],
+                                          child: Text(achievers[index]["achievement"],
                                             style: TextStyle(
                                                 color: AppColors.black,
                                                 fontFamily: 'HindMedium',

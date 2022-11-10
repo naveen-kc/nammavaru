@@ -54,6 +54,24 @@ class _AdminHomeState extends State<AdminHome> {
                   elevation: 0.0,
                   textColor: Colors.white,
                   backgroundColor: AppColors.black,
+                  text: 'Add achievers',
+                  width: 330,
+                  height: 50,
+                  fontSize: 18,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addAchievers');
+
+                  },
+                  borderRadius: BorderRadius.circular(10), fontFamily: 'HindBold',
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Button(
+                  elevation: 0.0,
+                  textColor: Colors.white,
+                  backgroundColor: AppColors.black,
                   text: 'View Requests',
                   width: 330,
                   height: 50,

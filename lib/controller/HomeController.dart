@@ -44,4 +44,19 @@ class HomeController{
   }
 
 
+  Future<dynamic> getAchievers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getAchievers, {
+      //"mobile":prefs.getString("mobile")!,
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
+
 }

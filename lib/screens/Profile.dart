@@ -23,10 +23,10 @@ class Profile extends StatefulWidget {
 
 class _LoginState extends State<Profile> {
   TextEditingController dateinput = TextEditingController();
-  // TextEditingController nameController = TextEditingController();
+   TextEditingController nameController = TextEditingController();
   // TextEditingController dobController = TextEditingController();
-  // TextEditingController villageController = TextEditingController();
-  // TextEditingController addressController = TextEditingController();
+   TextEditingController villageController = TextEditingController();
+   TextEditingController addressController = TextEditingController();
   List<dynamic> children = [
     {"name": "Navya K C"},
     {"name": "Chandru K"},
@@ -39,7 +39,7 @@ class _LoginState extends State<Profile> {
   String token='';
   LocalStorage localStorage=LocalStorage();
   String name='';
-  String mobile='9482759828';
+  String mobile='';
   String profile='';
   String dob='';
 
@@ -50,7 +50,9 @@ class _LoginState extends State<Profile> {
 
   @override
   void initState() {
-    loading=true;
+    setState((){
+      loading=true;
+    });
     dateinput.text = "";
     getProfile();
 
@@ -62,13 +64,20 @@ class _LoginState extends State<Profile> {
 
     var data=await ProfileController().getProfile();
     if(data['status']){
+
       name=data['name'];
       mobile=data['mobile'];
       dob=data['dob'];
       address=data['address'];
       profile=data['image'];
       village=data['village'];
+      setState((){
+        loading=false;
+      });
     }else{
+      setState((){
+        loading=false;
+      });
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -88,7 +97,109 @@ class _LoginState extends State<Profile> {
   }
 
   void updateProfile()async{
+    setState((){
+      loading=true;
+    });
 
+    String updatedName='';
+    if(nameController.text==''){
+      updatedName=name;
+    }else{
+      updatedName=nameController.text;
+    }
+    String updatedDob='';
+    if(dateinput.text==''){
+      updatedDob=dob;
+    }else{
+      updatedDob=dateinput.text;
+    }
+    String updatedVillage='';
+    if(villageController.text==''){
+      updatedVillage=village;
+    }else{
+      updatedVillage=villageController.text;
+    }
+    String updatedAddress='';
+    if(addressController.text==''){
+      updatedAddress=address;
+    }else{
+      updatedAddress=addressController.text;
+    }
+
+
+    var data=await ProfileController().updateProfile(updatedName, updatedDob, updatedVillage, updatedAddress);
+
+    if(data['status']){
+      setState((){
+        loading=false;
+      });
+      Navigator.pop(context,true);
+      Navigator.pushNamed(context, '/profile');
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Success",
+              description: data['message'],
+            );
+          });
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+  }
+
+
+  void uploadImage(String file)async{
+    setState((){
+      loading=true;
+    });
+
+    var data=await ProfileController().changeImage(file);
+
+    if(data['status']){
+      setState((){
+        loading=false;
+      });
+      Navigator.pop(context,true);
+      Navigator.pushNamed(context, '/profile');
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Success",
+              description: data['message'],
+            );
+          });
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
 
   }
 
@@ -142,7 +253,7 @@ class _LoginState extends State<Profile> {
       setState(() => this.photo = imageTemp);
       setState(()=> imageSelected = true);
 
-      //uploadImage(this.photo.path.toString());
+      uploadImage(this.photo.path.toString());
 
     } on PlatformException catch(e) {
       print('Failed to pick image: $e');
@@ -158,7 +269,7 @@ class _LoginState extends State<Profile> {
 
       setState(() => this.photo = imageTemp);
       setState(()=> imageSelected = true);
-      //  uploadImage(this.photo.path.toString());
+        uploadImage(this.photo.path.toString());
     } on PlatformException catch(e) {
       print('Failed to pick image: $e');
     }
@@ -543,6 +654,7 @@ class _LoginState extends State<Profile> {
                                   Padding(
                                     padding: EdgeInsets.all(15.0),
                                     child: TextField(
+                                      controller: nameController,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
@@ -603,6 +715,7 @@ class _LoginState extends State<Profile> {
                                   Padding(
                                     padding: EdgeInsets.all(15.0),
                                     child: TextField(
+                                      controller: addressController,
                                       keyboardType: TextInputType.streetAddress,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(
@@ -630,6 +743,7 @@ class _LoginState extends State<Profile> {
                                   Padding(
                                     padding: EdgeInsets.all(15.0),
                                     child: TextField(
+                                      controller: villageController,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(

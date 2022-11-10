@@ -50,49 +50,39 @@ class AdminController {
     }
 
 
-    // listen for response
-    // response.stream.transform(utf8.decoder).listen((value) {
-    //   debugPrint(value);
-    //
-    // });
+
+
+  Future<dynamic> addAchievers(String name,String village,String achieve,filepath) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var request = await http.MultipartRequest(
+        'POST', Uri.parse(ApiConstants.baseUrl + ApiEndpoints.addAchievers));
+    request.fields['name'] = name;
+    request.fields['village'] =  village;
+    request.fields['achieve'] = achieve;
+    request.headers['Accept'] ='application/json';
+
+    log("request :"+request.toString()+request.fields.toString());
+
+    request.files.add(await http.MultipartFile.fromPath('image', filepath));
+    var response = await request.send();
+
+    var responsed = await http.Response.fromStream(response);
+
+
+    final responsedData = json.decode(responsed.body);
+
+    Map<String, dynamic> data = responsedData;
+    print(data);
+    log("added :"+data.toString());
+    if (data['status']) {
+      return data;
+    } else {
+      return data;
+    }
+  }
 
 
 
-
-
-
-
-
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // var request = await http.MultipartRequest(
-    //     'POST', Uri.parse(ApiConstants.baseUrl + ApiEndpoints.register));
-    // request.fields['name'] = name;
-    // request.fields['mobile'] = mobile;
-    // request.fields['dob'] = dob;
-    // request.fields['address'] = address;
-    // request.fields['village'] = village;
-    // request.fields['password'] = password;
-    // request.headers['Accept'] ='application/json';
-    //
-    // log("request :"+request.toString()+request.fields.toString());
-    //
-    // request.files.add(await http.MultipartFile.fromPath('image', filepath));
-    // var response = await request.send();
-    //
-    // var responsed = await http.Response.fromStream(response);
-    //
-    //
-    // final responsedData = json.decode(responsed.body);
-    //
-    // Map<String, dynamic> data = responsedData;
-    // print(data);
-    // log("added :"+data.toString());
-    // if (data['status']) {
-    //   return data;
-    // } else {
-    //   return data;
-    // }
   }
 
 

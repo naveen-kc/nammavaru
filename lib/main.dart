@@ -12,6 +12,8 @@ import 'package:nammavaru/screens/Splash.dart';
 import 'package:nammavaru/screens/Updates.dart';
 import 'package:nammavaru/screens/Vision.dart';
 
+import 'admin/AddAchievers.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -39,6 +41,7 @@ class MyApp extends StatelessWidget {
         //Admin Screens
         '/adminHome': (context) => AdminHome(),
         '/addProgram': (context) => AddProgram(),
+        '/addAchievers': (context) => AddAchievers(),
 
       },
     );
