@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nammavaru/admin/AddProgram.dart';
 import 'package:nammavaru/admin/AdminHome.dart';
+import 'package:nammavaru/admin/AllUsers.dart';
 import 'package:nammavaru/screens/AddUpdate.dart';
 import 'package:nammavaru/screens/DetailedGallery.dart';
 import 'package:nammavaru/screens/Home.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/adminHome': (context) => AdminHome(),
         '/addProgram': (context) => AddProgram(),
         '/addAchievers': (context) => AddAchievers(),
+        '/users': (context) => AllUsers(),
 
       },
     );

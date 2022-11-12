@@ -31,9 +31,10 @@ class _LoginState extends State<Login> {
   void initState(){
     super.initState();
 
+    checkConnection();
   }
 
-  void userLogin() async{
+  void checkConnection()async{
     isInternet = await Helpers().isInternet();
     if(!isInternet){
       showDialog(
@@ -48,7 +49,10 @@ class _LoginState extends State<Login> {
             );
           });
     }
-   else if(mobile.isEmpty){
+  }
+
+  void userLogin() async{
+     if(mobile.isEmpty){
       showDialog(
           context: context,
           barrierDismissible: false,

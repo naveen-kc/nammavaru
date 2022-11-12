@@ -71,6 +71,12 @@ class _LoginState extends State<Profile> {
       address=data['address'];
       profile=data['image'];
       village=data['village'];
+
+      localStorage.putName(data['name']);
+      localStorage.putProfile(data['image']);
+
+
+
       setState((){
         loading=false;
       });
@@ -174,7 +180,7 @@ class _LoginState extends State<Profile> {
       setState((){
         loading=false;
       });
-      Navigator.pop(context,true);
+      Navigator.popUntil(context, (route) => route.settings.name=='/home');
       Navigator.pushNamed(context, '/profile');
 
       showDialog(

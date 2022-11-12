@@ -26,5 +26,6 @@ class ApiEndpoints {
   //admin endpoints addAchievers
   static String addProgram='/addProgram.php';
   static String addAchievers='/addAchievers.php';
+  static String getUsers='/getUsers.php';
 
 }

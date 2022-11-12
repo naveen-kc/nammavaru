@@ -38,6 +38,7 @@ void addAchiever()async{
           return AppDialog(
             header: "Enter all the fields",
             description: 'Please write all the fields.',
+            buttonColor: AppColors.black,
           );
         });
   }
@@ -49,6 +50,7 @@ void addAchiever()async{
           return AppDialog(
             header: "Select Image",
             description: 'Please select one image or if image is not there then add our app logo image',
+            buttonColor: AppColors.black,
           );
         });
   }else{
@@ -65,6 +67,7 @@ void addAchiever()async{
             return AppDialog(
               header: "Success",
               description: data['message'],
+              buttonColor: AppColors.black,
             );
           });
       setState((){
@@ -78,6 +81,7 @@ void addAchiever()async{
             return AppDialog(
               header: "Error",
               description: data['message'],
+              buttonColor: AppColors.black,
             );
           });
       setState((){

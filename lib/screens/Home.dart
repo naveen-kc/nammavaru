@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../controller/ProfileController.dart';
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
 import '../widgets/alert_box.dart';
@@ -36,6 +37,7 @@ class _HomeState extends State<Home> {
   bool isInternet = false;
   Helpers helpers = Helpers();
   String profile='';
+  String name ='';
 
 
   final pages = [
@@ -53,14 +55,18 @@ class _HomeState extends State<Home> {
     checkConnection();
   }
 
+
+
   void checkConnection() async {
 
     isInternet = await Helpers().isInternet();
 
     if (isInternet) {
-      SharedPreferences prefs= await SharedPreferences.getInstance();
-      profile=prefs.getString('image')!;
-      dev.log('prrororororo '+profile);
+      getProfile();
+      // SharedPreferences prefs= await SharedPreferences.getInstance();
+      // profile=prefs.getString('image')!;
+      // name=prefs.getString('name')!;
+      // dev.log('prrororororo '+profile);
 
     } else {
       showDialog(
@@ -74,6 +80,18 @@ class _HomeState extends State<Home> {
               move: '/home',
             );
           });
+    }
+  }
+
+  void getProfile()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+
+    var data=await ProfileController().getProfile();
+    if(data['status']){
+      localStorage.putName(data['name']);
+      localStorage.putProfile(data['image']);
+
+
     }
   }
 
@@ -115,6 +133,22 @@ class _HomeState extends State<Home> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        onDrawerChanged: (val) async {
+          SharedPreferences preferences =
+          await SharedPreferences.getInstance();
+          if (val) {
+            setState(() {
+              profile = preferences.getString("image")!;
+              name = preferences.getString("name")!;
+            });
+          } else {
+            setState(() {
+              profile = preferences.getString("image")!;
+              name = preferences.getString("name")!;
+            });
+          }
+        },
+
         resizeToAvoidBottomInset: false,
         drawer: Drawer(
           child: ListView(
@@ -144,7 +178,7 @@ class _HomeState extends State<Home> {
                         padding: const EdgeInsets.only(left: 20),
                         child: SizedBox(
                           width: 180,
-                          child: Text('Naveen K C',
+                          child: Text(name,
                           maxLines: 2,
                           style: TextStyle(
                             fontFamily: 'HindBold',
@@ -193,7 +227,7 @@ class _HomeState extends State<Home> {
                 title: const Text('Our Vision'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/vision');
+                  Navigator.pushNamed(context,'/vision');
                 },
               ),
               ListTile(
@@ -458,12 +492,40 @@ class _Page1State extends State<Page1> {
 
   bool loading =false;
   Helpers helpers=Helpers();
+  bool isInternet = false;
+  String profile='';
+  String name='';
 
   @override
   void initState() {
     getUpdates();
     super.initState();
 
+  }
+
+  void checkConnection() async {
+
+    isInternet = await Helpers().isInternet();
+
+    if (isInternet) {
+      SharedPreferences prefs= await SharedPreferences.getInstance();
+      profile=prefs.getString('image')!;
+      name=prefs.getString('name')!;
+      dev.log('prrororororo '+profile);
+
+    } else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return NoInternet(
+              header: "No Internet",
+              description:
+              "Please check your data connectivity or try again in some time.",
+              move: '/home',
+            );
+          });
+    }
   }
 
   void getUpdates()async{
@@ -1086,6 +1148,8 @@ class _Page2State extends State<Page2> {
 
 
   void sendPayment() async {
+    SharedPreferences prefs= await SharedPreferences.getInstance();
+    String name=prefs.getString('name')!;
     /*String url = 'upi://pay?pa=8904102726@ybl&pn=Rakesh&am=1&tn=Test Payment&cu=INR';
      // String url='8660305451';
       Uri upiurl = Uri( path: url);
@@ -1106,8 +1170,20 @@ class _Page2State extends State<Page2> {
               description: "Please enter the amount you want pay",
             );
           });
-    }else{
-      String _url='upi://pay?pa=9482759828@ybl&pn=Rakesh&am='+amount+'&tn=Test Payment&cu=INR';
+    }else if(reason.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter Reason",
+              description: "Please specify why you are making this payment.",
+            );
+          });
+
+   }
+    else{
+      String _url='upi://pay?pa=sk841967@ybl&pn='+name+'&am='+amount+'&tn='+reason+'&cu=INR';
       var result = await launch(_url);
       debugPrint(result.toString());
       if (result ==true) {

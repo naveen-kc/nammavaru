@@ -181,10 +181,10 @@ class Privacy extends StatelessWidget {
 <p>If you have any questions about this Privacy Policy, You can contact us:</p>
 <ul>
 <li>
-<p>By email: naveenkc435@gmail.com</p>
+<p>By email: sringeri.kumbararu@gmail.com</p>
 </li>
 <li>
-<p>By phone number: 9482759828</p>
+<p>By phone number: 9980008428</p>
 </li>
 </ul>""",
               style: {

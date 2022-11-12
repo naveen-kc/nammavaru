@@ -9,7 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../network/ApiEndpoints.dart';
 import 'package:http/http.dart' as http;
 
+import '../network/BaseApiService.dart';
+import '../network/NetworkApiService.dart';
+
 class AdminController {
+  BaseApiService _apiService = NetworkApiService();
 
   Future<dynamic> addProgram(List<XFile>? imageFileList,String name,String description,String date,String videoIds) async {
     var request = http.MultipartRequest('POST', Uri.parse(ApiConstants.baseUrl+ApiEndpoints.addProgram));
@@ -81,6 +85,21 @@ class AdminController {
     }
   }
 
+
+
+  Future<dynamic> getUsers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getUsers, {
+      //"mobile":prefs.getString("mobile")!,
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
 
 
   }

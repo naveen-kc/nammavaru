@@ -51,7 +51,26 @@ class _RegisterState extends State<Register> {
   @override
   void initState() {
     dobController.text = "";
+    checkConnection();
     super.initState();
+
+  }
+
+  void checkConnection()async{
+    isInternet = await Helpers().isInternet();
+    if(!isInternet){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return NoInternet(
+              header: "No Internet",
+              description:
+              "Please check your data connectivity or try again in some time.",
+              move: '/login',
+            );
+          });
+    }
   }
 
   void selectDate() async {
@@ -226,21 +245,7 @@ class _RegisterState extends State<Register> {
 
 
   void registerUser() async{
-    isInternet = await Helpers().isInternet();
-    if(!isInternet){
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return NoInternet(
-              header: "No Internet",
-              description:
-              "Please check your data connectivity or try again in some time.",
-              move: '/login',
-            );
-          });
-    }
-    else if(nameController.text.isEmpty||mobileController.text.isEmpty||dob.isEmpty||addressController.text.isEmpty||VillageController.text.isEmpty||passwordController.text.isEmpty||confirmController.text.isEmpty){
+    if(nameController.text.isEmpty||mobileController.text.isEmpty||dob.isEmpty||addressController.text.isEmpty||VillageController.text.isEmpty||passwordController.text.isEmpty||confirmController.text.isEmpty){
       showDialog(
           context: context,
           barrierDismissible: false,

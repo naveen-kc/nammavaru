@@ -72,11 +72,12 @@ class _AdminHomeState extends State<AdminHome> {
                   elevation: 0.0,
                   textColor: Colors.white,
                   backgroundColor: AppColors.black,
-                  text: 'View Requests',
+                  text: 'View Users',
                   width: 330,
                   height: 50,
                   fontSize: 18,
                   onPressed: () {
+                    Navigator.pushNamed(context, '/users');
 
                   },
                   borderRadius: BorderRadius.circular(10), fontFamily: 'HindBold',
