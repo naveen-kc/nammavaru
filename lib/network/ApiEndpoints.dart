@@ -20,6 +20,8 @@ class ApiEndpoints {
   static String getIndividualUpdate='/getIndividualUpdate.php';
   static String deleteUpdate='/deleteUpdate.php';
   static String changeProfile='/changeProfile.php';
+  static String addFamily='/addFamily.php';
+  static String getFamily='/getFamily.php';
 
 
 

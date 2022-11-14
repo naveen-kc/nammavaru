@@ -29,6 +29,22 @@ class ProfileController{
   }
 
 
+  Future<dynamic> getFamily() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getFamily, {
+      "mobile":prefs.getString("mobile")!,
+
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
+
   Future<dynamic> updateProfile(String updatedName,String updatedDob,String updatedVillage,String updatedAddress) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -79,6 +95,24 @@ class ProfileController{
     }
   }
 
+  Future<dynamic> addFamilyMembers(String name,String age) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.addFamily, {
+      "mobile":prefs.getString("mobile")!,
+      "name":name,
+      "age":age,
+
+
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
 
 
 }

@@ -24,14 +24,16 @@ class Profile extends StatefulWidget {
 class _LoginState extends State<Profile> {
   TextEditingController dateinput = TextEditingController();
    TextEditingController nameController = TextEditingController();
-  // TextEditingController dobController = TextEditingController();
+
    TextEditingController villageController = TextEditingController();
    TextEditingController addressController = TextEditingController();
-  List<dynamic> children = [
-    {"name": "Navya K C"},
-    {"name": "Chandru K"},
-    {"name": "Jaya"},
-  ];
+
+   TextEditingController famNameController = TextEditingController();
+  TextEditingController famAgeController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+
+  List<dynamic> children = [];
   bool editProfile = false;
   bool imageSelected= false;
   late File photo;
@@ -77,9 +79,10 @@ class _LoginState extends State<Profile> {
 
 
 
-      setState((){
-        loading=false;
-      });
+      // setState((){
+      //   loading=false;
+      // });
+      getFamilyMembers();
     }else{
       setState((){
         loading=false;
@@ -98,6 +101,40 @@ class _LoginState extends State<Profile> {
     setState((){
         loading=false;
       });
+
+
+  }
+
+  void  getFamilyMembers()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+
+    var data=await ProfileController().getFamily();
+    if(data['status']){
+
+   children=data['family'];
+
+      setState((){
+        loading=false;
+      });
+
+    }else{
+      setState((){
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+
+    setState((){
+      loading=false;
+    });
 
 
   }
@@ -166,6 +203,117 @@ class _LoginState extends State<Profile> {
           });
     }
 
+  }
+
+  void addFamily()async{
+    var data=await ProfileController().addFamilyMembers(famNameController.text,famAgeController.text);
+    if(data['status']) {
+      getFamilyMembers();
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Success",
+              description: data['message'],
+            );
+          });
+    }else{
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+    }
+
+
+
+
+
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+     return await showDialog(
+       barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              content: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: famNameController,
+                        validator: (value) {
+                          return value!.isNotEmpty ? null : "Please  Enter Name";
+                        },
+                        decoration:
+                        InputDecoration(hintText: "Name"),
+                      ),
+                      SizedBox(height: 5,),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: famAgeController,
+                        validator: (value) {
+                          return value!.isNotEmpty ? null : "Please Enter Age";
+                        },
+                        decoration:
+                        InputDecoration(hintText: "Age"),
+                      ),
+
+                    ],
+                  )),
+              title: Text('Family Details'),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Cancel',
+                        style: TextStyle(
+                            color: AppColors.black
+                        ),),
+                    ),
+                    onTap: () {
+                        Navigator.pop(context,true);
+
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Save ',
+                      style: TextStyle(
+                        color: AppColors.soil
+                      ),),
+                    ),
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Do something like updating SharedPreferences or User Settings etc.
+                          addFamily();
+                          famNameController.text='';
+                          famAgeController.text='';
+
+
+                       Navigator.pop(context,true);
+                      }
+                    },
+                  ),
+                ),
+              ],
+            );
+          });
+        });
   }
 
 
@@ -386,6 +534,7 @@ class _LoginState extends State<Profile> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
             backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: AppColors.soil,
@@ -514,58 +663,67 @@ class _LoginState extends State<Profile> {
                             'Family Members',
                             style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                fontFamily: 'HindBold'
                             ),
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                      color: Colors.white,
-                      child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: children.length,
-                          itemBuilder: (context, index) {
-                            return Column(children: <Widget>[
-                              Container(
-                                height: 60,
-                                child: ListTile(
-                                  title: Text(
-                                    children[index]["name"],
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        color: Colors.white,
+                        child:children.length==0?
+                        Center(child:
+                          Text('No family members added',style: TextStyle(
+                            color: AppColors.darkSoil,
+                            fontSize: 16,
+                            fontFamily: 'HindMedium'
+                          ),),): ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: children.length,
+                            itemBuilder: (context, index) {
+                              return Column(children: <Widget>[
+                                Container(
+                                  height: 60,
+                                  child: ListTile(
+                                    title: Text(
+                                      children[index]["name"],
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontFamily: 'HindBold',),
+                                    ),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios_sharp,
+                                      color: Colors.black,
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        /*  _currentItem = index;
+                                    card = children[_currentItem]['card'];
+                                    number = children[_currentItem]['number'];
+                                    image = children[_currentItem]['image'];
+                                    label = children[_currentItem]['label'];
+                                    date = children[_currentItem]['date'];
+                                    isDefault = true;*/
+                                      });
+                                    },
                                   ),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios_sharp,
-                                    color: Colors.black,
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      /*  _currentItem = index;
-                                  card = children[_currentItem]['card'];
-                                  number = children[_currentItem]['number'];
-                                  image = children[_currentItem]['image'];
-                                  label = children[_currentItem]['label'];
-                                  date = children[_currentItem]['date'];
-                                  isDefault = true;*/
-                                    });
-                                  },
                                 ),
-                              ),
-                              Divider(
-                                height: 1,
-                                color: Colors.grey[200],
-                                thickness: 2,
-                              )
-                            ]);
-                          }),
+                                Divider(
+                                  height: 1,
+                                  color: Colors.grey[200],
+                                  thickness: 2,
+                                )
+                              ]);
+                            }),
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -577,16 +735,17 @@ class _LoginState extends State<Profile> {
                           width: 300,
                           child: ElevatedButton(
                             child: Text(
-                              '+ Connect Family',
+                              'Add Family Member',
                               style: TextStyle(
                                 color: AppColors.soil,
                                 fontSize: 16.0,
+                                fontFamily: 'HindMedium'
                               ),
                             ),
-                            onPressed: () async{
+                            onPressed: () {
 
+                              _displayTextInputDialog(context);
 
-                              //Navigator.pushNamed(context, '/studentDetails');
                             },
                             style: ButtonStyle(
                                 backgroundColor:
@@ -601,6 +760,9 @@ class _LoginState extends State<Profile> {
                                         )))),
                           ),
                         )),
+                    SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ))
                 : SingleChildScrollView(

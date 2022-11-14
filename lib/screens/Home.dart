@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -1613,8 +1614,59 @@ class _Page4State extends State<Page4> {
       "status": '-1'
     },
 
-
   ];
+  late String payeeAddress;
+  late String payeeName;
+  late String transactionNote;
+  late String amount;
+  late String currencyUnit;
+
+
+  static const platform = const MethodChannel('payment');
+  late Uri uri;
+  late String paymentResponse;
+
+  late StreamSubscription<Map<String, Object>> _paymentSubscription;
+  late Stream<Object> _payment;
+  late Stream<Object> _currentPayment;
+
+  Future launchTez()async {
+    try {
+      final String result = await platform.invokeMethod('launchUpi',<String,dynamic>{"url":uri.toString()});
+      debugPrint(result);
+    } on PlatformException catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+
+
+  @override
+  void initState(){
+    super.initState();
+    payeeAddress = "9964171539@paytm";
+    payeeName = "payeename";
+    transactionNote = "Test for Deeplinking";
+    amount = "1";
+    currencyUnit = "INR";
+
+    uri = Uri.parse("upi://pay?pa=" +
+        payeeAddress +
+        "&pn=" +
+        payeeName +
+        "&tn=" +
+        transactionNote +
+        "&am=" +
+        amount +
+        "&cu=" +
+        currencyUnit);
+
+
+  }
+
+
+bool desgin=true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -1622,7 +1674,13 @@ class _Page4State extends State<Page4> {
       onWillPop: _onWillPop,
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
+          child:desgin?Container(child: Center(
+            child: GestureDetector(
+              onTap: (){
+                launchTez();
+              },
+                child: Text('Pay')),
+          ),): Column(
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -1749,14 +1807,14 @@ class _Page4State extends State<Page4> {
 
     return false;
   }
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
 
 
