@@ -41,6 +41,11 @@ class LocalStorage {
     prefs.setString("image", image);
   }
 
+  void putDeviceToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("device_token", token);
+  }
+
 
 
 

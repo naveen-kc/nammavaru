@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:nammavaru/utils/LocalStorage.dart';
 import 'package:nammavaru/utils/constants.dart';
@@ -25,6 +29,7 @@ class _LoginState extends State<Login> {
   String password='';
   var ctime;
   bool isInternet=false;
+  String token='';
 
 
   @override
@@ -48,6 +53,11 @@ class _LoginState extends State<Login> {
               move: '/login',
             );
           });
+    }else{
+      await Firebase.initializeApp();
+      token = (await FirebaseMessaging.instance.getToken())!;
+      log("token :" + token);
+      localStorage.putDeviceToken(token);
     }
   }
 

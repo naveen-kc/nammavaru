@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "833116892258",
+    "project_id": "nammavaru-4884c",
+    "storage_bucket": "nammavaru-4884c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833116892258:android:5346f0ce21101450be353b",
+        "android_client_info": {
+          "package_name": "com.example.nammavaru"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833116892258-0q4bamb79ce05ejakb5ejceb8kkj0hiu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnnUQUO8auUl-a_OE0HaptV2YvGbOUGN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833116892258-0q4bamb79ce05ejakb5ejceb8kkj0hiu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
