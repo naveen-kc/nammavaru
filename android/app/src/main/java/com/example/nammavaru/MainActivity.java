@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
@@ -27,7 +28,13 @@ public class MainActivity extends FlutterActivity {
                         if (call.method.equals("launchUpi")) {
                             Uri uri = Uri.parse(call.argument("url").toString());
                             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                            startActivityForResult(intent,1);
+
+                            if (intent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(intent,1);
+                            } else {
+                                Toast.makeText(MainActivity.this, "No UPI apps found in your device!", Toast.LENGTH_SHORT).show();
+                            }
+
                             Log.d("Call", "onMethodCall: launchUpi");
                             callResult = result;
                         } else {
