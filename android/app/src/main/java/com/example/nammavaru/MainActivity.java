@@ -20,7 +20,7 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // GeneratedPluginRegistrant.registerWith(MainActivity.this);
+        //GeneratedPluginRegistrant.registerWith(MainActivity.this);
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
                 new MethodChannel.MethodCallHandler() {
                     @Override

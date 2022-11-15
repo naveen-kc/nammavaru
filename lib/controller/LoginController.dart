@@ -40,6 +40,7 @@ class LoginController{
     request.fields['address'] = address;
     request.fields['village'] = village;
     request.fields['password'] = password;
+    request.fields['token']=prefs.getString("device_token")!;
     request.headers['Accept'] ='application/json';
 
     log("request :"+request.toString()+request.fields.toString());

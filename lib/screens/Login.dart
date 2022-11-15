@@ -40,6 +40,7 @@ class _LoginState extends State<Login> {
   }
 
   void checkConnection()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
     isInternet = await Helpers().isInternet();
     if(!isInternet){
       showDialog(
@@ -53,7 +54,8 @@ class _LoginState extends State<Login> {
               move: '/login',
             );
           });
-    }else{
+    }else if(prefs.getString("device_token")==null||prefs.getString("device_token")!.isEmpty){
+
       await Firebase.initializeApp();
       token = (await FirebaseMessaging.instance.getToken())!;
       log("token :" + token);
