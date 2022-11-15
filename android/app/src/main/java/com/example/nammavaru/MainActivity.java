@@ -40,15 +40,13 @@ public class MainActivity extends FlutterActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        Log.d("Result","Data :"+data);
+        Log.d("Result","Dataa :"+data.getData());
         if(data!=null && callResult!=null) {
             String res = data.getStringExtra("response");
-            String search = "SUCCESS";
-            if (res.toLowerCase().contains(search.toLowerCase())) {
-                callResult.success("Success");
-            } else {
-                callResult.success("Failed");
-            }
+            Log.d("Response","respi :"+res);
+
+                callResult.success(res);
+
         }else{
             Log.d("Result","Data = null (User canceled)");
             callResult.success("User Cancelled");
