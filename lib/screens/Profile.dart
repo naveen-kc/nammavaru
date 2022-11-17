@@ -534,7 +534,7 @@ class _LoginState extends State<Profile> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
             backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: AppColors.soil,

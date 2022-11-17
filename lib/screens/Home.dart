@@ -851,6 +851,19 @@ class _Page1State extends State<Page1> {
                                         padding: const EdgeInsets.all(20.0),
                                         child: Image.network(ApiConstants.baseUrl+'/'+updates[index]["image"],
                                           fit: BoxFit.fill,
+                                          loadingBuilder: (BuildContext context, Widget child,
+                                              ImageChunkEvent? loadingProgress) {
+                                            if (loadingProgress == null) return child;
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                color: AppColors.soil,
+                                                value: loadingProgress.expectedTotalBytes != null
+                                                    ? loadingProgress.cumulativeBytesLoaded /
+                                                    loadingProgress.expectedTotalBytes!
+                                                    : null,
+                                              ),
+                                            );
+                                          },
 
                                         )
                                       ),
@@ -1160,12 +1173,71 @@ class _Page2State extends State<Page2> {
     cfPaymentGatewayService.setCallback(verifyPayment, onError);
   }
 
-  void verifyPayment(String orderId) {
-    print("Verify Paymentttttttttt");
+  void verifyPayment(String orderId)async {
+    setState(() {
+      loading=true;
+    });
+    var data=await PaymentController().addPayment(amount, reason, "Success", orderId, cf_order_id, orderToken);
+
+    if(data["status"]){
+      setState(() {
+        loading=false;
+
+      });
+      reasonController.text='';
+      reason='';
+      amount='';
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Payment Success",
+              description: data['message']+" You can check details in Payment history page",
+            );
+          });
+    }else{
+      setState(() {
+        loading=false;
+      });
+
+    }
   }
 
-  void onError(CFErrorResponse errorResponse, String orderId) {
-    print("Error while making paymenttttttttt");
+  void onError(CFErrorResponse errorResponse, String orderId)async {
+    setState(() {
+      loading=true;
+    });
+    var data=await PaymentController().addPayment(amount, reason, "Failed", orderId, cf_order_id, orderToken);
+
+    if(data["status"]){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Payment Failed",
+              description: data['message']+" Error while making payment",
+            );
+          });
+      setState(() {
+        loading=false;
+      });
+    }else{
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Payment Failed",
+              description: data['message']+" Error while making payment",
+            );
+          });
+      setState(() {
+        loading=false;
+      });
+
+    }
   }
 
 
@@ -1333,6 +1405,7 @@ class _Page2State extends State<Page2> {
                             amount=amountController.text;
                           });
                           Navigator.pop(context,true);
+                          amountController.text='';
 
                         }, fontFamily: 'HindBold',
                       ),
@@ -1505,11 +1578,32 @@ class _Page2State extends State<Page2> {
                       )),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                    child: GestureDetector(
-                      onTap: (){
-                        openAmountDialog();
-                      },
-                      child: Container(
+                      child:
+                          Row(
+                            children: [
+                              Text(
+                                '₹ '+ amount,
+                                style: TextStyle(
+                                    color: AppColors.darkSoil,
+                                    fontSize: 30,
+                                    fontFamily: 'HindRegular'
+                                ),
+
+                                ),
+                              Spacer(),
+                              TextButton(onPressed: () {
+                                openAmountDialog();
+                              }, child:  Text(
+                                'Enter Amount Manually',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'HindRegular'
+                                ),
+                              ),),
+                            ],
+                          )
+
+                      /*Container(
                         height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -1526,9 +1620,8 @@ class _Page2State extends State<Page2> {
                               ),
                           ),
                         )
-                      ),
+                      ),*/
                     ),
-                  )
                 ],
               ),
               Padding(
@@ -1609,12 +1702,12 @@ class _Page3State extends State<Page3> {
 
   @override
   void initState() {
-    getUpdates();
+    getAchievers();
     super.initState();
 
   }
 
-  void getUpdates()async{
+  void getAchievers()async{
     setState((){
       loading=true;
     });
@@ -1708,6 +1801,7 @@ class _Page3State extends State<Page3> {
                                                       radius: 55.0,
                                                       backgroundImage: NetworkImage(
                                                         ApiConstants.baseUrl+'/'+achievers[index]["image"],
+
                                                       ),
                                                     ),
                                                   ),
@@ -1796,36 +1890,48 @@ class Page4 extends StatefulWidget {
 class _Page4State extends State<Page4> {
   Helpers helpers=Helpers();
 
-  List<dynamic> paymentList = [
-    {
-      "reason": "Construction of Kulal Bhavana",
-      "amount": "45,000",
-      "date": "22/07/2021, 11:30 AM",
-      "status": '1'
-    },
-    {
+  List<dynamic> paymentList = [];
 
-      "reason": "Construction of Kumbara School",
-      "amount": "25,000",
-      "date": "24/01/2022, 7:39 PM",
-      "status": '0'
-    },
-    {
-      "reason": "1st ceremony of kulal sangha",
-      "amount": "36,000",
-      "date": "02/04/2020, 1:50 AM",
-      "status": '-1'
-    },
+  bool loading=false;
 
-  ];
 
+  @override
+  void initState(){
+    super.initState();
+    getAllPayments();
+  }
+
+  void getAllPayments()async{
+    setState(() {
+      loading=true;
+    });
+
+    var data=await PaymentController().getPayments();
+    if(data['status']){
+      setState((){
+        paymentList=data['payments'];
+      });
+      setState(() {
+        loading=false;
+      });
+    }
+
+  }
 
 
   @override
   Widget build(BuildContext context) {
     return  SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
+        child:loading?Loader(): SingleChildScrollView(
+          child:paymentList.length==0? Center(
+            child: Text(
+              "You have not done any payments",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontFamily: 'HindMedium'),
+            ),
+          ): Column(
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -1894,17 +2000,17 @@ class _Page4State extends State<Page4> {
                                       ),
                                       Spacer(),
                                       Icon(
-                                        paymentList[index]['status'] == '1'
+                                        paymentList[index]['status'] == 'Success'
                                             ? Icons.check_circle
                                             : paymentList[index]['status'] ==
-                                            '0'
+                                            'Failed'
                                             ? Icons.dangerous_rounded
                                             : Icons.info,
                                         color: paymentList[index]['status'] ==
-                                            '1'
+                                            'Success'
                                             ? Colors.green
                                             : paymentList[index]['status'] ==
-                                            '0'
+                                            'Success'
                                             ? Colors.red
                                             : Colors.orange,
                                         size: 18,
@@ -1912,12 +2018,7 @@ class _Page4State extends State<Page4> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 5),
                                         child: Text(
-                                          paymentList[index]['status'] == '1'
-                                              ? 'Successful'
-                                              : paymentList[index]['status'] ==
-                                              '0'
-                                              ? 'Failed'
-                                              : 'Pending',
+                                          paymentList[index]['status'],
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey,

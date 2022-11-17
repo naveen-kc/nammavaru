@@ -23,6 +23,8 @@ class ApiEndpoints {
   static String addFamily='/addFamily.php';
   static String getFamily='/getFamily.php';
   static String getPaymentToken='/getPaymentToken.php';
+  static String addPayment='/addPayment.php';
+  static String getPayments='/getPayments.php';
 
 
 

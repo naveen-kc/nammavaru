@@ -234,7 +234,22 @@ class _DetailedGalleryState extends State<DetailedGallery> {
                                               ],
                                             ),
                                             child: Image.network(ApiConstants.baseUrl+'/photos/'+photos[index],
-                                            fit: BoxFit.contain,),
+                                            fit: BoxFit.contain,
+                                             // fit: BoxFit.fill,
+                                              loadingBuilder: (BuildContext context, Widget child,
+                                                  ImageChunkEvent? loadingProgress) {
+                                                if (loadingProgress == null) return child;
+                                                return Center(
+                                                  child: CircularProgressIndicator(
+                                                    color: AppColors.soil,
+                                                    value: loadingProgress.expectedTotalBytes != null
+                                                        ? loadingProgress.cumulativeBytesLoaded /
+                                                        loadingProgress.expectedTotalBytes!
+                                                        : null,
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                           ),
                                         ),
 
