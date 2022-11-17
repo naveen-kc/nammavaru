@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -7,6 +8,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cferrorresponse/cferrorresponse.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpaymentcomponents/cfpaymentcomponent.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cftheme/cftheme.dart';
+import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
+import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:nammavaru/controller/HomeController.dart';
 import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/constants.dart';
@@ -14,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../controller/PaymentController.dart';
 import '../controller/ProfileController.dart';
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
@@ -1053,26 +1063,32 @@ class Page2 extends StatefulWidget {
   State<Page2> createState() => _Page2State();
 }
 class _Page2State extends State<Page2> {
+  var cfPaymentGatewayService = CFPaymentGatewayService();
   Helpers helpers=Helpers();
+  bool loading=false;
   List<dynamic> amountList=[{"amt":"50"},{"amt":"100"},{"amt":"250"},{"amt":"500"},{"amt":"1000"},{"amt":"2000"}];
   TextEditingController amountController = TextEditingController();
   TextEditingController reasonController = TextEditingController();
   int selectedAmt=1;
   bool called=false;
 
-   String payeeAddress='';
-   String payeeName='';
    String reason='';
    String amount='';
-   String currencyUnit='';
+   Map<dynamic,dynamic> tokenData={};
+   List<dynamic> tData=[];
 
 
-  static const platform = const MethodChannel('payment');
-  late Uri uri;
-  late String paymentResponse;
+
+  String orderId = "";
+  String orderToken = "";
+  String cf_order_id="";
+  CFEnvironment environment = CFEnvironment.SANDBOX;
 
 
-  Future launchUpi()async {
+
+
+
+ /* Future launchUpi()async {
     if(amount.isEmpty){
       showDialog(
           context: context,
@@ -1135,21 +1151,118 @@ class _Page2State extends State<Page2> {
         debugPrint(e.toString());
       }
     }
-  }
-
-  void storeDetails(BuildContext context)async{
-    log("hiiiiiiiiiiiii");
-    setState((){
-      called=true;
-    });
-  }
-
+  }*/
 
 
   @override
   void initState(){
     super.initState();
+    cfPaymentGatewayService.setCallback(verifyPayment, onError);
+  }
 
+  void verifyPayment(String orderId) {
+    print("Verify Paymentttttttttt");
+  }
+
+  void onError(CFErrorResponse errorResponse, String orderId) {
+    print("Error while making paymenttttttttt");
+  }
+
+
+
+
+  CFSession? createSession() {
+    try {
+      var session = CFSessionBuilder().setEnvironment(environment).setOrderId(orderId).setOrderToken(orderToken).build();
+      return session;
+    } on CFException catch (e) {
+      print(e.message);
+    }
+    return null;
+  }
+
+  pay() async {
+    try {
+      var session = createSession();
+      List<CFPaymentModes> components = <CFPaymentModes>[];
+      components.add(CFPaymentModes.UPI);
+     // components.add(CFPaymentModes.CARD);
+      //components.add(CFPaymentModes.WALLET);
+      var paymentComponent = CFPaymentComponentBuilder().setComponents(components).build();
+
+      var theme = CFThemeBuilder().setNavigationBarBackgroundColorColor("#9B7653").setPrimaryFont("Menlo").setSecondaryFont("Futura").build();
+
+      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder().setSession(session!).setPaymentComponent(paymentComponent).setTheme(theme).build();
+
+      cfPaymentGatewayService.doPayment(cfDropCheckoutPayment);
+
+
+    } on CFException catch (e) {
+      print(e.message);
+    }
+
+  }
+
+
+
+
+
+  void getPaymentToken()async{
+
+    if(amount.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter Amount",
+              description: "Please enter the amount you want pay",
+            );
+          });
+    }else if(reason.isEmpty){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Enter Reason",
+              description: "Please specify why you are making this payment.",
+            );
+          });
+
+    }
+    else {
+
+
+      setState(() {
+
+        loading=true;
+      });
+      var data = await PaymentController().getToken(amount, reason);
+
+      if (data['status']) {
+
+
+        tData=data['data'];
+        log('tData :' + tData.toString());
+
+        Map valueMap = jsonDecode(tData[0]);
+
+
+        orderId=valueMap['order_id'].toString();
+        orderToken=valueMap['order_token'].toString();
+        cf_order_id=valueMap['cf_order_id'].toString();
+        log('tokennnnn :' + orderToken.toString());
+
+        setState(() {
+
+          loading=false;
+        });
+       pay();
+
+
+      }
+    }
   }
 
 
@@ -1293,7 +1406,7 @@ class _Page2State extends State<Page2> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(238, 240, 234, 1),
-        body:Scrollbar(
+        body:loading?Loader():Scrollbar(
         child:SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1460,7 +1573,7 @@ class _Page2State extends State<Page2> {
                     height: 50,
                     fontSize: 18,
                     onPressed: () {
-                      launchUpi();
+                      getPaymentToken();
                      // sendPayment();
                     },
                     borderRadius: BorderRadius.circular(25),

@@ -22,6 +22,7 @@ class ApiEndpoints {
   static String changeProfile='/changeProfile.php';
   static String addFamily='/addFamily.php';
   static String getFamily='/getFamily.php';
+  static String getPaymentToken='/getPaymentToken.php';
 
 
 
