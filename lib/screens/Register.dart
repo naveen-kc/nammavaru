@@ -317,7 +317,7 @@ class _RegisterState extends State<Register> {
         localStorage.putVillage(VillageController.text);
 
 
-        Navigator.pop(context,true);
+        Navigator.popUntil(context, (route) => route.settings.name=='/splash');
         Navigator.pushNamed(context, "/home");
         setState(() {
           loading = false;

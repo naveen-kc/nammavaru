@@ -121,7 +121,7 @@ class _HomeState extends State<Home> {
   void checkAdmin()async{
     SharedPreferences prefs=await SharedPreferences.getInstance();
 
-    if(prefs.getString("mobile")=='8660305451'){
+    if(prefs.getString("mobile")=='8660305451' ||prefs.getString("mobile")=='7975792908'){
       Navigator.pop(context,true);
       Navigator.pushNamed(context, '/adminHome');
     }
@@ -783,8 +783,9 @@ class _Page1State extends State<Page1> {
                                                     child: CircleAvatar(
                                                       backgroundColor: Colors.black,
                                                       radius: 55.0,
-                                                      backgroundImage: AssetImage(
-                                                        helpers.pottering,
+                                                      backgroundImage: NetworkImage(
+                                                        ApiConstants.baseUrl+'/'+updates[index]
+                                                        ['profile'],
                                                       ),
                                                     ),
                                                   ),

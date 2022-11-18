@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "833116892258-44jraqf4n2eltkut7uil9c44blqgaj1l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nammavaru",
+            "certificate_hash": "98f3f3841bf7ba36f2c3f11a5d191600b7c0635d"
+          }
+        },
+        {
           "client_id": "833116892258-0q4bamb79ce05ejakb5ejceb8kkj0hiu.apps.googleusercontent.com",
           "client_type": 3
         }

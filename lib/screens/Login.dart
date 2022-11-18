@@ -8,6 +8,7 @@ import 'package:nammavaru/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controller/LoginController.dart';
+import '../notification.dart';
 import '../utils/helpers.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
@@ -30,6 +31,14 @@ class _LoginState extends State<Login> {
   var ctime;
   bool isInternet=false;
   String token='';
+
+  String notificationTitle = 'No Title';
+  String notificationBody = 'No Body';
+  String notificationData = 'No Data';
+
+  _changeData(String msg) => setState(() => notificationData = msg);
+  _changeBody(String msg) => setState(() => notificationBody = msg);
+  _changeTitle(String msg) => setState(() => notificationTitle = msg);
 
 
   @override
@@ -60,6 +69,14 @@ class _LoginState extends State<Login> {
       token = (await FirebaseMessaging.instance.getToken())!;
       log("token :" + token);
       localStorage.putDeviceToken(token);
+
+      final firebaseMessaging = FCM();
+      firebaseMessaging.setNotifications();
+
+      firebaseMessaging.streamCtlr.stream.listen(_changeData);
+      firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
+      firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+
     }
   }
 

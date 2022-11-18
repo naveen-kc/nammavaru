@@ -22,6 +22,7 @@ class UpdateController{
     request.fields['mobile'] =  prefs.getString('mobile')!;
     request.fields['village'] =  prefs.getString('village')!;
     request.fields['description'] = description;
+    request.fields['profile'] = prefs.getString('image')!;
     request.headers['Accept'] ='application/json';
 
     log("request :"+request.toString()+request.fields.toString());
