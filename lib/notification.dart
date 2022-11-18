@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:nammavaru/utils/LocalStorage.dart';
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {
-  await Firebase.initializeApp();
+
 
   if (message.data.containsKey('data')) {
     // Handle data message
@@ -19,13 +21,16 @@ Future<void> onBackgroundMessage(RemoteMessage message) async {
 }
 
 class FCM {
+
+
   final _firebaseMessaging = FirebaseMessaging.instance;
 
   final streamCtlr = StreamController<String>.broadcast();
   final titleCtlr = StreamController<String>.broadcast();
   final bodyCtlr = StreamController<String>.broadcast();
 
-  setNotifications() {
+  setNotifications() async {
+    LocalStorage localStorage=LocalStorage();
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
     FirebaseMessaging.onMessage.listen(
           (message) async {
@@ -42,9 +47,16 @@ class FCM {
         bodyCtlr.sink.add(message.notification!.body!);
       },
     );
+    // await Firebase.initializeApp();
+    final token = (await _firebaseMessaging.getToken())!;
+     log("token :" + token);
+     localStorage.putDeviceToken(token);
+
     // With this token you can test it easily on your phone
-    final token =
-    _firebaseMessaging.getToken().then((value) => print('Token: $value'));
+    // final token =
+    // _firebaseMessaging.getToken().then((value) =>
+    //     localStorage.putDeviceToken(value!)
+    // );
   }
 
   dispose() {

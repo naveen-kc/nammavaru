@@ -65,12 +65,12 @@ class _LoginState extends State<Login> {
           });
     }else if(prefs.getString("device_token")==null||prefs.getString("device_token")!.isEmpty){
 
-      await Firebase.initializeApp();
-      token = (await FirebaseMessaging.instance.getToken())!;
-      log("token :" + token);
-      localStorage.putDeviceToken(token);
+       await Firebase.initializeApp();
+      // token = (await FirebaseMessaging.instance.getToken())!;
+      // log("token :" + token);
+      // localStorage.putDeviceToken(token);
 
-      final firebaseMessaging = FCM();
+      final firebaseMessaging =await FCM();
       firebaseMessaging.setNotifications();
 
       firebaseMessaging.streamCtlr.stream.listen(_changeData);
@@ -118,6 +118,7 @@ class _LoginState extends State<Login> {
         localStorage.putAddress(data['address']);
         localStorage.putVillage(data['village']);
         localStorage.putProfile(data['image']);
+        localStorage.putDeviceToken(data['token']);
 
         Navigator.pop(context,true);
         Navigator.pushNamed(context, "/home");
