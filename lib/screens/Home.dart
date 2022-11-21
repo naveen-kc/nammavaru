@@ -575,6 +575,21 @@ class _Page1State extends State<Page1> {
   }
 
 
+
+  Future<void> _pullRefresh() async {
+    var data=await HomeController().getUpdates();
+    if(data['status']){
+      setState((){
+        updates=data['updates'];
+      });
+      setState((){
+        loading=false;
+      });
+    }
+
+}
+
+
   @override
   Widget build(BuildContext context) {
     return loading
@@ -735,152 +750,157 @@ class _Page1State extends State<Page1> {
 
 
               Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: updates.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                //height: 300,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
-                                  ],
-                                ),
-                                margin: EdgeInsets.zero,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 5.0),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                                        child: GestureDetector(
-                                          onTap: () {},
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                              color:AppColors.divider_line,
-                                            ),
-                                            height: 80,
-                                            child: ListTile(
-                                              leading: Padding(
-                                                padding:
-                                                const EdgeInsets.only(top: 0),
-                                                child: SizedBox(
-                                                  height: 50,
-                                                  width: 50,
-                                                  child: CircleAvatar(
-                                                    radius: 60,
-                                                    backgroundColor: Colors.white,
+                child:RefreshIndicator(
+                  color: AppColors.soil,
+                    onRefresh: _pullRefresh,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: updates.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  //height: 300,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(color: AppColors.lightGrey2, spreadRadius: 3),
+                                    ],
+                                  ),
+                                  margin: EdgeInsets.zero,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 5.0),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                                          child: GestureDetector(
+                                            onTap: () {},
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(10),
+                                                color:AppColors.divider_line,
+                                              ),
+                                              height: 80,
+                                              child: ListTile(
+                                                leading: Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(top: 0),
+                                                  child: SizedBox(
+                                                    height: 50,
+                                                    width: 50,
                                                     child: CircleAvatar(
-                                                      backgroundColor: Colors.black,
-                                                      radius: 55.0,
-                                                      backgroundImage: NetworkImage(
-                                                        ApiConstants.baseUrl+'/'+updates[index]
-                                                        ['profile'],
+                                                      radius: 60,
+                                                      backgroundColor: Colors.white,
+                                                      child: CircleAvatar(
+                                                        backgroundColor: Colors.black,
+                                                        radius: 55.0,
+                                                        backgroundImage: NetworkImage(
+                                                          ApiConstants.baseUrl+'/'+updates[index]
+                                                          ['profile'],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              title:  Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      updates[index]
-                                                      ['name'],
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.black,
-                                                        fontFamily: 'HindBold'
+                                                title:  Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        updates[index]
+                                                        ['name'],
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.black,
+                                                          fontFamily: 'HindBold'
+                                                        ),
                                                       ),
-                                                    ),
 
-                                                    Text(
-                                                      updates[index]
-                                                      ['village'],
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: AppColors.grey,
-                                                          fontFamily: 'HindMedium'
+                                                      Text(
+                                                        updates[index]
+                                                        ['village'],
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: AppColors.grey,
+                                                            fontFamily: 'HindMedium'
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      updates[index]
-                                                      ['time'],
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: AppColors.grey,
-                                                          fontFamily: 'HindRegular'
+                                                      Text(
+                                                        updates[index]
+                                                        ['time'],
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: AppColors.grey,
+                                                            fontFamily: 'HindRegular'
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                    ],
+                                                  ),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15, 5, 15, 0),
-                                        child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                            child: Text(updates[index]["description"],
-                                                style: TextStyle(
-                                                  color: AppColors.black,
-                                                  fontFamily: 'HindMedium',
-                                                  fontSize: 15
-                                                ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              15, 5, 15, 0),
+                                          child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                              child: Text(updates[index]["description"],
+                                                  style: TextStyle(
+                                                    color: AppColors.black,
+                                                    fontFamily: 'HindMedium',
+                                                    fontSize: 15
+                                                  ),
 
-                                            )
+                                              )
+                                          ),
+
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              15, 5, 15, 0),
+                                          child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Image.network(ApiConstants.baseUrl+'/'+updates[index]["image"],
+                                            fit: BoxFit.fill,
+                                            loadingBuilder: (BuildContext context, Widget child,
+                                                ImageChunkEvent? loadingProgress) {
+                                              if (loadingProgress == null) return child;
+                                              return Center(
+                                                child: CircularProgressIndicator(
+                                                  color: AppColors.soil,
+                                                  value: loadingProgress.expectedTotalBytes != null
+                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                      loadingProgress.expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              );
+                                            },
+
+                                          )
                                         ),
 
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15, 5, 15, 0),
-                                        child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Image.network(ApiConstants.baseUrl+'/'+updates[index]["image"],
-                                          fit: BoxFit.fill,
-                                          loadingBuilder: (BuildContext context, Widget child,
-                                              ImageChunkEvent? loadingProgress) {
-                                            if (loadingProgress == null) return child;
-                                            return Center(
-                                              child: CircularProgressIndicator(
-                                                color: AppColors.soil,
-                                                value: loadingProgress.expectedTotalBytes != null
-                                                    ? loadingProgress.cumulativeBytesLoaded /
-                                                    loadingProgress.expectedTotalBytes!
-                                                    : null,
-                                              ),
-                                            );
-                                          },
+                                        ),
 
-                                        )
-                                      ),
-
-                                      ),
-
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
               )
+
 
 
         ],

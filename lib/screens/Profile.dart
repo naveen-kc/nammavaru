@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/Helpers.dart';
 import '../utils/LocalStorage.dart';
 import '../utils/constants.dart';
+import '../widgets/alert_box.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
@@ -232,8 +233,81 @@ class _LoginState extends State<Profile> {
     }
 
 
+ void deleteFamilyMember(String name)async{
+    setState(() {
+      loading=true;
+    });
+   var data=await ProfileController().deleteFamilyMember(name);
+   if(data['status']) {
+     getFamilyMembers();
+     setState(() {
+       loading=false;
+     });
+     showDialog(
+         context: context,
+         barrierDismissible: false,
+         builder: (BuildContext context) {
+           return AppDialog(
+             header: "Success",
+             description: data['message'],
+           );
+         });
+   }else{
+     setState(() {
+       loading=false;
+     });
+     showDialog(
+         context: context,
+         barrierDismissible: false,
+         builder: (BuildContext context) {
+           return AppDialog(
+             header: "Error",
+             description: data['message'],
+           );
+         });
+   }
+  }
 
 
+  void deleteAccount()async{
+    setState(() {
+      loading=true;
+    });
+    var data=await ProfileController().deleteAccount();
+    if(data['status']) {
+      SharedPreferences prefs=await SharedPreferences.getInstance();
+      prefs.clear();
+      Navigator.popUntil(context, (route) => route.settings.name=='/login');
+      Navigator.pushNamed(context, '/login');
+
+
+      setState(() {
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Success",
+              description: data['message'],
+            );
+          });
+    }else{
+      setState(() {
+        loading=false;
+      });
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AppDialog(
+              header: "Error",
+              description: data['message'],
+            );
+          });
+    }
+  }
 
 
   Future<void> _displayTextInputDialog(BuildContext context) async {
@@ -642,7 +716,7 @@ class _LoginState extends State<Profile> {
                                         fontSize: 15,
                                       )),
                                   child: Text(
-                                    'Edit Profile',
+                                    'Edit Account',
                                     maxLines: 1,
                                     style: TextStyle(fontSize: 12),
                                   ))
@@ -699,9 +773,24 @@ class _LoginState extends State<Profile> {
                                           color: Colors.black,
                                           fontFamily: 'HindBold',),
                                     ),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios_sharp,
-                                      color: Colors.black,
+                                    trailing: IconButton(
+                                      icon: Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.black,
+                                      ), onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return AlertBox(
+                                              header: "Delete Member",
+                                              description: "Do you really want delete this member?",
+                                              okay: () {
+                                                deleteFamilyMember(children[index]["name"]);
+                                              },
+                                            );
+                                          });
+                                    },
                                     ),
                                     onTap: () {
                                       setState(() {
@@ -954,6 +1043,46 @@ class _LoginState extends State<Profile> {
                                           fontSize: 18,
                                           onPressed: () {
                                             updateProfile();
+                                          },
+                                          borderRadius: BorderRadius.circular(25), fontFamily: 'HindBold',
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+
+
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: [
+                                        Button(
+                                          elevation: 0.0,
+                                          textColor: Colors.white,
+                                          backgroundColor: AppColors.red,
+                                          text: 'Delete Account',
+                                          width: 330,
+                                          height: 50,
+                                          fontSize: 18,
+                                          onPressed: () {
+
+                                            showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                builder: (BuildContext context) {
+                                                  return AlertBox(
+                                                    header: "Delete Account",
+                                                    description: "After deleting your account you will delete all your data from nammavaru. Do you still want to continue?",
+                                                    okay: () {
+                                                      deleteAccount();
+                                                    },
+                                                  );
+                                                });
+
+
                                           },
                                           borderRadius: BorderRadius.circular(25), fontFamily: 'HindBold',
                                         ),

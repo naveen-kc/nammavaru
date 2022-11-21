@@ -114,5 +114,44 @@ class ProfileController{
     }
   }
 
+  Future<dynamic> deleteFamilyMember(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.deleteMember, {
+      "mobile":prefs.getString("mobile")!,
+      "name":name,
+
+
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
+
+
+  Future<dynamic> deleteAccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.deleteAccount, {
+      "mobile":prefs.getString("mobile")!,
+      "image":prefs.getString("image")!,
+
+
+
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
 
 }

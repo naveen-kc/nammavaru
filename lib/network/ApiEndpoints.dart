@@ -25,6 +25,9 @@ class ApiEndpoints {
   static String getPaymentToken='/getPaymentToken.php';
   static String addPayment='/addPayment.php';
   static String getPayments='/getPayments.php';
+  static String deleteMember='/deleteMember.php';
+  static String deleteAccount='/deleteAccount.php';
+
 
 
 
