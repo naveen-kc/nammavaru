@@ -16,6 +16,7 @@ import '../controller/LoginController.dart';
 import '../utils/LocalStorage.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
+import '../widgets/lottie.dart';
 import '../widgets/no_internet.dart';
 
 class Register extends StatefulWidget {
@@ -348,7 +349,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child:loading?Loader(): SingleChildScrollView(
+          child:loading?LottiePage(): SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children:  [

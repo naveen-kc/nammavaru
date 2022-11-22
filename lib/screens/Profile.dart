@@ -14,6 +14,7 @@ import '../widgets/alert_box.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/lottie.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -630,7 +631,7 @@ class _LoginState extends State<Profile> {
                 ),
               ),
             ),
-            body:loading?Loader(): !editProfile
+            body:loading?LottiePage(): !editProfile
                 ? SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

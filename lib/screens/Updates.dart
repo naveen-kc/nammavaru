@@ -9,6 +9,7 @@ import 'package:nammavaru/widgets/alert_box.dart';
 import '../utils/constants.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/lottie.dart';
 
 class Updates extends StatefulWidget {
   const Updates({Key? key}) : super(key: key);
@@ -119,7 +120,7 @@ class _UpdatesState extends State<Updates> {
             style: TextStyle(fontFamily: 'HindBold', color: AppColors.black),
           )),
         body:loading
-        ? Loader()
+        ? LottiePage()
         : SafeArea(
       child: Container(
         color: AppColors.white,

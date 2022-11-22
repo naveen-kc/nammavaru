@@ -19,6 +19,7 @@ import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:nammavaru/controller/HomeController.dart';
 import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/constants.dart';
+import 'package:nammavaru/widgets/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -593,7 +594,7 @@ class _Page1State extends State<Page1> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loader()
+        ? LottiePage()
         : SafeArea(
       child: Container(
         color: AppColors.white,
@@ -968,7 +969,7 @@ class _Page5State extends State<Page5> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loader()
+        ? LottiePage()
         : SafeArea(
       child: Container(
         color: AppColors.white,
@@ -1500,7 +1501,7 @@ class _Page2State extends State<Page2> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(238, 240, 234, 1),
-        body:loading?Loader():Scrollbar(
+        body:loading?LottiePage():Scrollbar(
         child:SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1765,7 +1766,7 @@ class _Page3State extends State<Page3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:loading?Loader(): SafeArea(child:
+      body:loading?LottiePage(): SafeArea(child:
       Container(
         color: AppColors.grey,
         child:  Column(
@@ -1943,7 +1944,7 @@ class _Page4State extends State<Page4> {
   @override
   Widget build(BuildContext context) {
     return  SafeArea(
-        child:loading?Loader(): SingleChildScrollView(
+        child:loading?LottiePage(): SingleChildScrollView(
           child:paymentList.length==0? Center(
             child: Text(
               "You have not done any payments",

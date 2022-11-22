@@ -13,6 +13,8 @@ import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
 import 'package:http/http.dart' as http;
+
+import '../widgets/lottie.dart';
 class AddProgram extends StatefulWidget {
   const AddProgram({Key? key}) : super(key: key);
 
@@ -120,7 +122,7 @@ class _AddProgramState extends State<AddProgram> {
         resizeToAvoidBottomInset: true,
         body: SafeArea(
         child:loading
-                ? Loader()
+                ? LottiePage()
                 : SingleChildScrollView(
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height,

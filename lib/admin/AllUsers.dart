@@ -6,6 +6,7 @@ import '../utils/Helpers.dart';
 import '../utils/constants.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/lottie.dart';
 
 class AllUsers extends StatefulWidget {
   const AllUsers({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class _AllUsersState extends State<AllUsers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:loading?Loader(): SafeArea(child:
+      body:loading?LottiePage(): SafeArea(child:
       Container(
         color: AppColors.lightGrey2,
         child:  Column(

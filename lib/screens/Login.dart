@@ -13,6 +13,7 @@ import '../utils/helpers.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/lottie.dart';
 import '../widgets/no_internet.dart';
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -152,7 +153,7 @@ class _LoginState extends State<Login> {
       child: Scaffold(
         resizeToAvoidBottomInset : false,
         body: SafeArea(
-            child:loading?Loader(): Column(
+            child:loading?LottiePage(): Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children:  [
                 SizedBox(

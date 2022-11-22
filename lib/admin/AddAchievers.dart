@@ -11,6 +11,7 @@ import '../utils/constants.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/lottie.dart';
 
 
 class AddAchievers extends StatefulWidget {
@@ -243,7 +244,7 @@ void addAchiever()async{
       resizeToAvoidBottomInset: true,
       body: SafeArea(
           child:loading
-              ? Loader()
+              ? LottiePage()
               : SingleChildScrollView(
           child: SizedBox(
           height: MediaQuery.of(context).size.height,

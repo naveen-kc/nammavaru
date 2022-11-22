@@ -9,6 +9,7 @@ import 'package:nammavaru/widgets/loader.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../utils/constants.dart';
+import '../widgets/lottie.dart';
 
 class DetailedGallery extends StatefulWidget {
   const DetailedGallery({Key? key}) : super(key: key);
@@ -105,7 +106,7 @@ class _DetailedGalleryState extends State<DetailedGallery> {
               style: TextStyle(fontFamily: 'HindBold',
                   color: AppColors.black),
             )),
-        body: loading?Loader(): YoutubePlayerBuilder(
+        body: loading?LottiePage(): YoutubePlayerBuilder(
             player: YoutubePlayer(
               controller: _controller,
               showVideoProgressIndicator: true,

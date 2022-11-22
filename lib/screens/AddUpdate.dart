@@ -12,6 +12,7 @@ import '../utils/constants.dart';
 import '../widgets/app_button.dart';
 import '../widgets/dialog_box.dart';
 import '../widgets/loader.dart';
+import '../widgets/lottie.dart';
 
 
 class AddUpdate extends StatefulWidget {
@@ -236,7 +237,7 @@ class _AddUpdateState extends State<AddUpdate> {
     return Scaffold(
       resizeToAvoidBottomInset : false,
       body: SafeArea(
-          child:loading?Loader():
+          child:loading?LottiePage():
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
