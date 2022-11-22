@@ -86,6 +86,33 @@ class AdminController {
   }
 
 
+  Future<dynamic> addBanner(String name,String url,filepath) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var request = await http.MultipartRequest(
+        'POST', Uri.parse(ApiConstants.baseUrl + ApiEndpoints.addBanner));
+    request.fields['name'] = name;
+    request.fields['url'] =  url;
+    request.headers['Accept'] ='application/json';
+
+    log("request :"+request.toString()+request.fields.toString());
+
+    request.files.add(await http.MultipartFile.fromPath('image', filepath));
+    var response = await request.send();
+
+    var responsed = await http.Response.fromStream(response);
+
+
+    final responsedData = json.decode(responsed.body);
+
+    Map<String, dynamic> data = responsedData;
+    print(data);
+    log("added :"+data.toString());
+    if (data['status']) {
+      return data;
+    } else {
+      return data;
+    }
+  }
 
   Future<dynamic> getUsers() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

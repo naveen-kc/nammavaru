@@ -27,6 +27,7 @@ class ApiEndpoints {
   static String getPayments='/getPayments.php';
   static String deleteMember='/deleteMember.php';
   static String deleteAccount='/deleteAccount.php';
+  static String getBanners='/getBanners.php';
 
 
 
@@ -34,6 +35,7 @@ class ApiEndpoints {
   //admin endpoints addAchievers
   static String addProgram='/addProgram.php';
   static String addAchievers='/addAchievers.php';
+  static String addBanner='/addBanner.php';
   static String getUsers='/getUsers.php';
 
 }

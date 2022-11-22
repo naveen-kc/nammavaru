@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nammavaru/admin/AddBanner.dart';
 import 'package:nammavaru/admin/AddProgram.dart';
 import 'package:nammavaru/admin/AdminHome.dart';
 import 'package:nammavaru/admin/AllUsers.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/adminHome': (context) => AdminHome(),
         '/addProgram': (context) => AddProgram(),
         '/addAchievers': (context) => AddAchievers(),
+        '/addBanner': (context) => AddBanner(),
         '/users': (context) => AllUsers(),
 
       },

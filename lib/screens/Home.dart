@@ -496,11 +496,7 @@ class Page1 extends StatefulWidget {
   State<Page1> createState() => _Page1State();
 }
 class _Page1State extends State<Page1> {
-  final List<String> imageList = [
-    'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-    'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
-  ];
+  List<dynamic> imageList = [];
 
   List<dynamic> updates=[];
 
@@ -512,6 +508,7 @@ class _Page1State extends State<Page1> {
 
   @override
   void initState() {
+    getBanners();
     getUpdates();
     super.initState();
 
@@ -540,6 +537,32 @@ class _Page1State extends State<Page1> {
             );
           });
     }
+  }
+
+
+  void getBanners()async{
+    setState((){
+      loading=true;
+    });
+    var data=await HomeController().getBanners();
+    if(data['status']){
+      setState((){
+        imageList=data['banners'];
+      });
+      setState((){
+        loading=false;
+      });
+    }else{
+      setState((){
+        loading=false;
+      });
+      getBanners();
+    }
+
+    setState((){
+      loading=false;
+    });
+
   }
 
   void getUpdates()async{
@@ -628,15 +651,20 @@ class _Page1State extends State<Page1> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            imageList[i],
+                            ApiConstants.baseUrl+'/'+imageList[i]['image'],
                             width: MediaQuery.of(context).size.width,
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
-                    onTap: () {
-                      var url = imageList[i];
+                    onTap: ()async {
+                      var url = imageList[i]['url'];
+                      if (await canLaunch(url)) {
+                      await launch(url);
+                      } else {
+                      throw 'Could not launch $url';
+                      }
                       print(url.toString());
                     },
                   );

@@ -12,6 +12,21 @@ class HomeController{
   BaseApiService _apiService = NetworkApiService();
 
 
+  Future<dynamic> getBanners() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getBanners, {
+      //"mobile":prefs.getString("mobile")!,
+    },);
+    Map<String,dynamic> data = response;
+    if(data["status"]==200){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
+
   Future<dynamic> getUpdates() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getUpdates, {
