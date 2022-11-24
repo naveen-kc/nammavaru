@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nammavaru/controller/UpdateController.dart';
 import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/Helpers.dart';
@@ -122,7 +123,26 @@ class _UpdatesState extends State<Updates> {
         body:loading
         ? LottiePage()
         : SafeArea(
-      child: Container(
+      child:individualUpdates.length==0?Column(
+        children: [
+          Lottie.asset(
+            helpers.artist,
+            repeat: true,
+            reverse: true,
+            animate: true,
+          ),
+          Center(
+            child: Text(
+              "No have not added any updates",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontFamily: 'HindMedium'),
+            ),
+          ),
+        ],
+      ): Container(
         color: AppColors.white,
         height: MediaQuery.of(context).size.height,
         child: Column(

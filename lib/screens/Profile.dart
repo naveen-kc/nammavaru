@@ -208,8 +208,14 @@ class _LoginState extends State<Profile> {
   }
 
   void addFamily()async{
+    setState((){
+      loading=true;
+    });
     var data=await ProfileController().addFamilyMembers(famNameController.text,famAgeController.text);
     if(data['status']) {
+      setState((){
+        loading=false;
+      });
       getFamilyMembers();
       showDialog(
           context: context,
@@ -221,6 +227,9 @@ class _LoginState extends State<Profile> {
             );
           });
     }else{
+      setState((){
+        loading=false;
+      });
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -609,7 +618,7 @@ class _LoginState extends State<Profile> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-          resizeToAvoidBottomInset: true,
+          resizeToAvoidBottomInset: false,
             backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: AppColors.soil,

@@ -16,6 +16,7 @@ import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
 import 'package:flutter_cashfree_pg_sdk/api/cftheme/cftheme.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nammavaru/controller/HomeController.dart';
 import 'package:nammavaru/network/ApiEndpoints.dart';
 import 'package:nammavaru/utils/constants.dart';
@@ -904,6 +905,7 @@ class _Page1State extends State<Page1> {
                                               if (loadingProgress == null) return child;
                                               return Center(
                                                 child: CircularProgressIndicator(
+                                                  strokeWidth: 1,
                                                   color: AppColors.soil,
                                                   value: loadingProgress.expectedTotalBytes != null
                                                       ? loadingProgress.cumulativeBytesLoaded /
@@ -999,7 +1001,26 @@ class _Page5State extends State<Page5> {
     return loading
         ? LottiePage()
         : SafeArea(
-      child: Container(
+      child:programs.length==0?Column(
+        children: [
+          Lottie.asset(
+            helpers.artist,
+            repeat: true,
+            reverse: true,
+            animate: true,
+          ),
+          Center(
+            child: Text(
+              "No programs has been added",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontFamily: 'HindMedium'),
+            ),
+          ),
+        ],
+      ): Container(
         color: AppColors.white,
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -1795,7 +1816,26 @@ class _Page3State extends State<Page3> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:loading?LottiePage(): SafeArea(child:
-      Container(
+      achievers.length==0? Column(
+        children: [
+          Lottie.asset(
+            helpers.artist,
+            repeat: true,
+            reverse: true,
+            animate: true,
+          ),
+          Center(
+            child: Text(
+              "No achievers has been added",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontFamily: 'HindMedium'),
+            ),
+          ),
+        ],
+      ): Container(
         color: AppColors.grey,
         child:  Column(
           children: [
@@ -1973,14 +2013,25 @@ class _Page4State extends State<Page4> {
   Widget build(BuildContext context) {
     return  SafeArea(
         child:loading?LottiePage(): SingleChildScrollView(
-          child:paymentList.length==0? Center(
-            child: Text(
-              "You have not done any payments",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontFamily: 'HindMedium'),
-            ),
+          child:paymentList.length==0? Column(
+            children: [
+              Lottie.asset(
+                helpers.artist,
+                repeat: true,
+                reverse: true,
+                animate: true,
+              ),
+              Center(
+                child: Text(
+                  "You have not done any payments",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontFamily: 'HindMedium'),
+                ),
+              ),
+            ],
           ): Column(
             children: [
               Container(

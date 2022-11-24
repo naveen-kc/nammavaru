@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nammavaru/utils/helpers.dart';
 
 
 class LottiePage extends StatefulWidget {
@@ -9,6 +10,7 @@ class LottiePage extends StatefulWidget {
 }
 
 class _LottiePageState extends State<LottiePage> {
+  Helpers helpers=Helpers();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,8 +21,8 @@ class _LottiePageState extends State<LottiePage> {
             child: SizedBox(
                 height: 100.0,
                 width: 100.0,
-                child: Lottie.network(
-                  'https://assets9.lottiefiles.com/private_files/lf30_9hubvnjh.json',
+                child: Lottie.asset(
+                  helpers.loading,
                   repeat: true,
                   reverse: true,
                   animate: true,
