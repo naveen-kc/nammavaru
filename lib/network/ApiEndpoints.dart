@@ -28,6 +28,7 @@ class ApiEndpoints {
   static String deleteMember='/deleteMember.php';
   static String deleteAccount='/deleteAccount.php';
   static String getBanners='/getBanners.php';
+  static String getAppDetails='/getAppDetails.php';
 
 
 

@@ -63,4 +63,18 @@ class LoginController{
      }
   }
 
+
+  Future<dynamic> versionCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.getAppDetails, {},);
+    Map<String,dynamic> data = response;
+    log("resonse :"+data.toString());
+    if(data["status"]){
+      return data;
+    }
+    else{
+      return data;
+    }
+  }
+
 }
