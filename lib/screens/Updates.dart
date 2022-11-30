@@ -133,7 +133,7 @@ class _UpdatesState extends State<Updates> {
           ),
           Center(
             child: Text(
-              "No have not added any updates",
+              "You have not added any updates",
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 25,

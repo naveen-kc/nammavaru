@@ -17,6 +17,7 @@ class LoginController{
     var response = await _apiService.postResponse(ApiConstants.baseUrl,ApiEndpoints.login, {
       "mobile":phone,
       "password":pass,
+      "token":prefs.getString("device_token")!
     },);
     Map<String,dynamic> data = response;
     if(data["status"]==200){

@@ -541,7 +541,7 @@ class _Page1State extends State<Page1> {
   }
 
 
-  void getBanners()async{
+  void  getBanners()async{
     setState((){
       loading=true;
     });
