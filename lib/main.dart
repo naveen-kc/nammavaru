@@ -4,6 +4,7 @@ import 'package:nammavaru/admin/AddProgram.dart';
 import 'package:nammavaru/admin/AdminHome.dart';
 import 'package:nammavaru/admin/AllUsers.dart';
 import 'package:nammavaru/screens/AddUpdate.dart';
+import 'package:nammavaru/screens/Decision.dart';
 import 'package:nammavaru/screens/DetailedGallery.dart';
 import 'package:nammavaru/screens/Home.dart';
 import 'package:nammavaru/screens/Login.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/detailedGallery': (context) => DetailedGallery(),
         '/addUpdate': (context) => AddUpdate(),
         '/updates': (context) => Updates(),
+        '/decision': (context) => Decision(),
 
         //Admin Screens
         '/adminHome': (context) => AdminHome(),

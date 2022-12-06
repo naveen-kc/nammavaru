@@ -319,7 +319,7 @@ class _RegisterState extends State<Register> {
 
 
         Navigator.popUntil(context, (route) => route.settings.name=='/splash');
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/decision");
         setState(() {
           loading = false;
         });
