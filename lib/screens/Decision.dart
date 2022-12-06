@@ -12,7 +12,9 @@ import 'package:flutter_cashfree_pg_sdk/api/cftheme/cftheme.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
 import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:nammavaru/utils/Helpers.dart';
+import 'package:nammavaru/utils/LocalStorage.dart';
 import 'package:nammavaru/utils/constants.dart';
+import 'package:nammavaru/widgets/loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controller/PaymentController.dart';
@@ -40,6 +42,7 @@ class _DecisionState extends State<Decision> {
   String amount='';
   Map<dynamic,dynamic> tokenData={};
   List<dynamic> tData=[];
+  LocalStorage localStorage=LocalStorage();
 
 
   @override
@@ -57,13 +60,15 @@ class _DecisionState extends State<Decision> {
     setState(() {
       loading=true;
     });
-    var data=await PaymentController().addPayment(amount, reason, "Success", orderId, cf_order_id, orderToken);
+    var data=await PaymentController().addPayment("100", "Registration", "Success", orderId, cf_order_id, orderToken);
 
     if(data["status"]){
       setState(() {
         loading=false;
 
       });
+      localStorage.putPaid('1');
+
       Navigator.popUntil(context, (route) => route.settings.name=='/splash');
       Navigator.pushNamed(context, "/home");
       showDialog(
@@ -71,8 +76,8 @@ class _DecisionState extends State<Decision> {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AppDialog(
-              header: "Payment Success",
-              description: data['message'],
+              header: "Registration Success",
+              description: "You have been registered successfully. Thank you for showing your interest in our community development.",
             );
           });
     }else{
@@ -87,7 +92,7 @@ class _DecisionState extends State<Decision> {
     setState(() {
       loading=true;
     });
-    var data=await PaymentController().addPayment(amount, reason, "Failed", orderId, cf_order_id, orderToken);
+    var data=await PaymentController().addPayment("100", "Member Reg", "Failed", orderId, cf_order_id, orderToken);
 
     if(data["status"]){
       showDialog(
@@ -165,7 +170,7 @@ class _DecisionState extends State<Decision> {
 
         loading=true;
       });
-      var data = await PaymentController().getToken("100", "Member Registration");
+      var data = await PaymentController().getToken("100", "Registration");
 
       if (data['status']) {
 
@@ -181,12 +186,14 @@ class _DecisionState extends State<Decision> {
         cf_order_id=valueMap['cf_order_id'].toString();
         log('tokennnnn :' + orderToken.toString());
 
-        setState(() {
+       if(mounted){
+         setState(() {
 
-          loading=false;
-        });
+           loading=false;
+         });
+
+       }
         pay();
-
 
       }
 
@@ -220,11 +227,12 @@ class _DecisionState extends State<Decision> {
 
 
   @override
-  Widget build(BuildContext context) => new Scaffold(
-    body:  new Column(
+  Widget build(BuildContext context) =>
+      Scaffold(
+    body:   Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
+          loading?Loader(): Container(
             height:MediaQuery.of(context).size.height,
               child:  Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -285,7 +293,7 @@ class _DecisionState extends State<Decision> {
                           height: 15,
                           fontFamily: 'OpenMedium',
                           onPressed: () {
-                            Navigator.pop(context, true);
+
                             getPaymentToken();
                           },
                         ),

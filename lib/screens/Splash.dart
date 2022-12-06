@@ -77,8 +77,14 @@ class _SplashState extends State<Splash> {
       });
     }else {
       Future.delayed(Duration(seconds: 1), () {
-        Navigator.pop(context, true);
-        Navigator.pushNamed(context, '/home');
+        if(prefs.getString("paid")=='1'){
+          Navigator.pop(context, true);
+          Navigator.pushNamed(context, '/home');
+        }else{
+          Navigator.pop(context, true);
+          Navigator.pushNamed(context, '/decision');
+        }
+
       });
     }
 

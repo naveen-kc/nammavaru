@@ -316,6 +316,8 @@ class _RegisterState extends State<Register> {
         localStorage.putDob(dob);
         localStorage.putAddress(addressController.text);
         localStorage.putVillage(VillageController.text);
+        localStorage.putPaid("0");
+
 
 
         Navigator.popUntil(context, (route) => route.settings.name=='/splash');

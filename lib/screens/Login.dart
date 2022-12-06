@@ -120,9 +120,17 @@ class _LoginState extends State<Login> {
         localStorage.putVillage(data['village']);
         localStorage.putProfile(data['image']);
         localStorage.putDeviceToken(data['token']);
+        localStorage.putPaid(data['paid']);
 
-        Navigator.pop(context,true);
-        Navigator.pushNamed(context, "/home");
+        if(data['paid']=='1'){
+          Navigator.pop(context,true);
+          Navigator.pushNamed(context, "/home");
+        }else{
+          Navigator.pop(context,true);
+          Navigator.pushNamed(context, "/decision");
+        }
+
+
         setState(() {
           loading = false;
         });

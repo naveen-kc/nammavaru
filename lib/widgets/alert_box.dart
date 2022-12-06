@@ -89,7 +89,7 @@ class _AppDialogState extends State<AlertBox> {
                     text:widget.no==null? 'No': widget.no!,
                     width: 120,
                     height: 15,
-                    fontFamily: 'OpenMedium',
+                    fontFamily: 'HindMedium',
                     onPressed: () {
                       Navigator.pop(context, true);
                       widget.cancel!();
@@ -104,7 +104,7 @@ class _AppDialogState extends State<AlertBox> {
                     text: widget.yes==null? 'Yes': widget.yes!,
                     width: 120,
                     height: 15,
-                    fontFamily: 'OpenMedium',
+                    fontFamily: 'HindMedium',
                     onPressed: () {
                       Navigator.pop(context, true);
                       widget.okay();

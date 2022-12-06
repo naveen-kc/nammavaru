@@ -46,6 +46,11 @@ class LocalStorage {
     prefs.setString("device_token", token);
   }
 
+  void putPaid(String paid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("paid", paid);
+  }
+
   void putAppVersion(String version) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("appVersion", version);

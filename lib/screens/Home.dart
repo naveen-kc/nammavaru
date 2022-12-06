@@ -560,9 +560,7 @@ class _Page1State extends State<Page1> {
       getBanners();
     }
 
-    setState((){
-      loading=false;
-    });
+
 
   }
 
